@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>404 – Page Not Found | HIMS</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" href="/assets/logo.svg" type="image/svg+xml">
+
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: "#2563eb"
+          }
+        }
+      }
+    }
+  </script>
+</head>
+
+<body class="bg-slate-100">
+
+  <!-- ================= 404 PAGE ================= -->
+  <div class="flex min-h-screen items-center justify-center">
+    <div class="text-center">
+
+      <h1 class="mb-4 text-4xl font-bold text-gray-900">404</h1>
+
+      <p class="mb-4 text-xl text-gray-500">
+        Oops! Page not found
+      </p>
+
+      <a href="/" class="text-primary font-semibold underline hover:text-blue-700 transition">
+        Return to Home
+      </a>
+
+    </div>
+  </div>
+
+</body>
+</html>

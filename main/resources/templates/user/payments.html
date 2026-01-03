@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Payments – HIMS</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" href="/assets/logo.svg" type="image/svg+xml">
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: "#2563eb"
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .nav-item:hover {
+    background: #f1f5f9;
+  }
+  </style>
+</head>
+
+<body class="bg-slate-50 text-gray-900">
+
+<!-- ================= SIDEBAR (LOCKED – SAME EVERYWHERE) ================= -->
+<aside class="fixed top-0 left-0 w-64 h-full bg-white border-r flex flex-col">
+
+  <!-- LOGO -->
+  <div class="p-6 border-b flex items-center gap-3">
+    <div class="w-10 h-10 rounded-xl bg-primary flex items-center justify-center">
+      <i data-lucide="shield" class="text-white"></i>
+    </div>
+    <div>
+      <p class="font-bold text-lg">HIMS</p>
+      <p class="text-sm text-gray-500">User Portal</p>
+    </div>
+  </div>
+
+  <!-- NAV -->
+  <nav class="flex-1 p-4 space-y-1">
+    <div class="nav-item" onclick="go('/user/dashboard')">
+      <i data-lucide="layout-dashboard"></i>Dashboard
+    </div>
+    <div class="nav-item" onclick="go('/user/policies')">
+      <i data-lucide="file-text"></i>My Policies
+    </div>
+    <div class="nav-item" onclick="go('/user/claims')">
+      <i data-lucide="clipboard-list"></i>Claims
+    </div>
+    <div class="nav-item bg-primary/10 text-primary" onclick="go('/user/payments')">
+      <i data-lucide="credit-card"></i>Payments
+    </div>
+    <div class="nav-item" onclick="go('/user/support')">
+      <i data-lucide="headphones"></i>Support
+    </div>
+    <div class="nav-item" onclick="go('/user/profile')">
+      <i data-lucide="user"></i>Profile
+    </div>
+  </nav>
+
+  <!-- LOGOUT -->
+  <div class="p-4 border-t">
+    <button onclick="go('/login')"
+      class="w-full flex items-center gap-3 p-3 rounded-xl text-red-600 hover:bg-red-50 font-semibold">
+      <i data-lucide="log-out"></i>Logout
+    </button>
+  </div>
+</aside>
+
+<!-- ================= MAIN ================= -->
+<main class="ml-64 p-8">
+
+  <!-- HEADER -->
+  <div class="flex items-center justify-between mb-8">
+    <div>
+      <h1 class="text-3xl font-bold mb-1">Make Payment</h1>
+      <p class="text-gray-500">Pay your insurance premiums securely</p>
+    </div>
+
+    <a th:href="@{/user/payment-history}"
+       class="inline-flex items-center px-4 py-2 border rounded-xl font-semibold hover:bg-slate-50">
+      <i data-lucide="history" class="w-4 h-4 mr-2"></i>
+      Payment History
+    </a>
+  </div>
+
+  <div th:if="${success}" class="mb-4 p-3 bg-green-50 text-green-800 rounded">[[${success}]]</div>
+  <div th:if="${error}" class="mb-4 p-3 bg-red-50 text-red-800 rounded">[[${error}]]</div>
+
+  <div class="grid lg:grid-cols-3 gap-8">
+
+    <!-- ================= PAYMENT FORM ================= -->
+    <div class="lg:col-span-2">
+      <form th:action="@{/user/payments/pay}" method="post" class="bg-white rounded-2xl border shadow-sm p-8 space-y-6">
+        <!-- POLICY -->
+        <div>
+          <label class="text-sm font-semibold mb-2 block">Select Policy</label>
+          <select name="policyId" class="w-full h-11 px-4 border rounded-xl focus:ring-2 focus:ring-primary outline-none" required>
+            <option th:if="${policies == null or #lists.isEmpty(policies)}">No policies available</option>
+            <option th:each="p : ${policies}" th:value="${p.id}" th:text="${p.policyNumber + ' - ' + p.policyType}">Policy</option>
+          </select>
+        </div>
+
+        <!-- AMOUNT -->
+        <div>
+          <label class="flex items-center gap-2 text-sm font-semibold mb-2">
+            <i data-lucide="dollar-sign" class="w-4 h-4 text-gray-400"></i>
+            Amount
+          </label>
+          <input step="0.01" type="number" name="amount" required
+            class="w-full h-11 px-4 border rounded-xl focus:ring-2 focus:ring-primary outline-none" />
+        </div>
+
+        <!-- CARD INFO -->
+        <div class="border-t pt-6">
+          <h3 class="text-lg font-semibold flex items-center gap-2 mb-4">
+            <i data-lucide="credit-card" class="w-5 h-5 text-primary"></i>
+            Card Information
+          </h3>
+
+          <div class="space-y-4">
+
+            <div>
+              <label class="text-sm font-semibold mb-2 block">Cardholder Name</label>
+              <input type="text"
+                class="w-full h-11 px-4 border rounded-xl focus:ring-2 focus:ring-primary outline-none" />
+            </div>
+
+            <div>
+              <label class="text-sm font-semibold mb-2 block">Card Number</label>
+              <input type="text"
+                placeholder="1234 5678 9012 3456"
+                class="w-full h-11 px-4 border rounded-xl focus:ring-2 focus:ring-primary outline-none" />
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="flex items-center gap-2 text-sm font-semibold mb-2">
+                  <i data-lucide="calendar" class="w-4 h-4 text-gray-400"></i>
+                  Expiry Date
+                </label>
+                <input type="text"
+                  placeholder="MM/YY"
+                  class="w-full h-11 px-4 border rounded-xl focus:ring-2 focus:ring-primary outline-none" />
+              </div>
+
+              <div>
+                <label class="flex items-center gap-2 text-sm font-semibold mb-2">
+                  <i data-lucide="lock" class="w-4 h-4 text-gray-400"></i>
+                  CVV
+                </label>
+                <input type="text"
+                  placeholder="123"
+                  class="w-full h-11 px-4 border rounded-xl focus:ring-2 focus:ring-primary outline-none" />
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <button
+          class="w-full py-3 bg-primary text-white rounded-xl font-semibold hover:bg-blue-700 flex items-center justify-center gap-2">
+          <i data-lucide="lock" class="w-4 h-4"></i>
+          Pay Securely
+        </button>
+
+      </form>
+    </div>
+
+    <!-- ================= SUMMARY ================= -->
+    <div>
+      <div class="bg-white rounded-2xl border shadow-sm p-6 sticky top-8">
+        <h3 class="text-lg font-semibold mb-4">Payment Summary</h3>
+
+        <div class="space-y-3 mb-6 text-sm">
+          <div class="flex justify-between">
+            <span class="text-gray-500">Premium Amount</span>
+            <span class="font-medium">$150.00</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-gray-500">Processing Fee</span>
+            <span class="font-medium">$0.00</span>
+          </div>
+          <div class="border-t pt-3 flex justify-between">
+            <span class="font-semibold">Total</span>
+            <span class="text-xl font-bold text-primary">$150.00</span>
+          </div>
+        </div>
+
+        <div class="space-y-3 text-sm text-gray-500">
+          <div class="flex items-center gap-2">
+            <i data-lucide="check-circle" class="w-4 h-4 text-green-600"></i>
+            Secure 256-bit SSL encryption
+          </div>
+          <div class="flex items-center gap-2">
+            <i data-lucide="check-circle" class="w-4 h-4 text-green-600"></i>
+            Instant payment confirmation
+          </div>
+          <div class="flex items-center gap-2">
+            <i data-lucide="check-circle" class="w-4 h-4 text-green-600"></i>
+            Email receipt
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<script>
+  function go(p){ window.location.href = p }
+  function logout(){ window.location.href = '/logout' }
+  lucide.createIcons();
+</script>
+
+</body>
+</html>

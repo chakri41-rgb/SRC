@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Payments</title>
+  <link rel="stylesheet" href="../css/styles.css">
+    <link rel="icon" href="/assets/logo.svg" type="image/svg+xml">
+
+</head>
+<body>
+
+<header class="header">
+  <h2>Admin - Payments</h2>
+</header>
+
+<div class="container-flex">
+
+  <aside class="sidebar">
+    <a th:href="@{/admin/dashboard}">Dashboard</a>
+      <a th:href="@{/admin/payments}">Payments</a>
+  </aside>
+
+  <main class="content">
+    <h1>Payments</h1>
+
+    <button class="btn btn-primary" onclick="exportCSV()">Export CSV</button>
+
+    <div class="table-box">
+      <table>
+        <tr>
+          <th>User</th>
+          <th>Amount</th>
+          <th>Status</th>
+        </tr>
+        <tr>
+          <td>Meera</td>
+          <td>₹1200</td>
+          <td>Paid</td>
+        </tr>
+      </table>
+    </div>
+  </main>
+
+</div>
+
+<script src="../js/app.js"></script>
+</body>
+</html>

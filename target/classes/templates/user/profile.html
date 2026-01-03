@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>My Profile – HIMS</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" href="/assets/logo.svg" type="image/svg+xml">
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Lucide -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: "#2563eb"
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .nav-item:hover {
+    background: #f1f5f9;
+  }
+    .gradient-primary {
+      background: linear-gradient(135deg, #2563eb, #3b82f6);
+    }
+  </style>
+</head>
+
+<body class="bg-slate-50 text-gray-900">
+
+<!-- ================= SIDEBAR ================= -->
+<aside class="fixed top-0 left-0 w-64 h-full bg-white border-r flex flex-col">
+
+  <!-- LOGO -->
+  <div class="p-6 border-b flex items-center gap-3">
+    <div class="w-10 h-10 rounded-xl bg-primary flex items-center justify-center">
+      <i data-lucide="shield" class="text-white"></i>
+    </div>
+    <div>
+      <p class="font-bold text-lg">HIMS</p>
+      <p class="text-sm text-gray-500">User Portal</p>
+    </div>
+  </div>
+
+  <!-- NAV -->
+  <nav class="flex-1 p-4 space-y-1">
+    <div class="nav-item" onclick="go('/user/dashboard')">
+      <i data-lucide="layout-dashboard"></i>Dashboard
+    </div>
+    <div class="nav-item" onclick="go('/user/policies')">
+      <i data-lucide="file-text"></i>My Policies
+    </div>
+    <div class="nav-item" onclick="go('/user/claims')">
+      <i data-lucide="clipboard-list"></i>Claims
+    </div>
+    <div class="nav-item" onclick="go('/user/payments')">
+      <i data-lucide="credit-card"></i>Payments
+    </div>
+    <div class="nav-item" onclick="go('/user/support')">
+      <i data-lucide="headphones"></i>Support
+    </div>
+    <div class="nav-item bg-primary/10 text-primary">
+      <i data-lucide="user"></i>Profile
+    </div>
+  </nav>
+
+  <!-- LOGOUT -->
+  <div class="p-4 border-t">
+    <button onclick="go('/logout')"
+      class="w-full flex items-center gap-3 p-3 rounded-xl text-red-600 hover:bg-red-50 font-semibold">
+      <i data-lucide="log-out"></i>Logout
+    </button>
+  </div>
+</aside>
+
+<!-- ================= MAIN ================= -->
+<main class="ml-64 p-8">
+
+  <div class="max-w-3xl">
+
+    <!-- HEADER -->
+    <h1 class="text-3xl font-bold mb-1">My Profile</h1>
+    <p class="text-gray-500 mb-8">Manage your personal information</p>
+
+    <!-- PROFILE CARD -->
+    <div class="bg-white rounded-2xl border p-8 mb-8">
+      <div class="flex items-center gap-6">
+        <div class="relative">
+          <div class="w-24 h-24 rounded-2xl gradient-primary flex items-center justify-center text-white text-3xl font-bold">
+            JD
+          </div>
+          <button class="absolute -bottom-2 -right-2 w-8 h-8 rounded-full bg-white border shadow flex items-center justify-center hover:bg-slate-50">
+            <i data-lucide="camera" class="w-4 h-4 text-gray-500"></i>
+          </button>
+        </div>
+        <div>
+          <h2 class="text-2xl font-bold">John Doe</h2>
+          <p class="text-gray-500">john.doe@example.com</p>
+          <p class="text-sm text-gray-400 mt-1">Member since January 2024</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- FORM -->
+    <form class="bg-white rounded-2xl border p-8">
+      <h3 class="text-xl font-semibold mb-6">Personal Information</h3>
+
+      <div class="space-y-6">
+
+        <!-- NAME -->
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="text-sm font-medium flex items-center gap-2 mb-1">
+              <i data-lucide="user" class="w-4 h-4 text-gray-400"></i>
+              First Name
+            </label>
+            <input value="John"
+              class="w-full border rounded-xl px-4 py-2 focus:ring-2 focus:ring-primary outline-none">
+          </div>
+          <div>
+            <label class="text-sm font-medium mb-1 block">Last Name</label>
+            <input value="Doe"
+              class="w-full border rounded-xl px-4 py-2 focus:ring-2 focus:ring-primary outline-none">
+          </div>
+        </div>
+
+        <!-- EMAIL -->
+        <div>
+          <label class="text-sm font-medium flex items-center gap-2 mb-1">
+            <i data-lucide="mail" class="w-4 h-4 text-gray-400"></i>
+            Email Address
+          </label>
+          <input value="john.doe@example.com"
+            class="w-full border rounded-xl px-4 py-2 focus:ring-2 focus:ring-primary outline-none">
+        </div>
+
+        <!-- PHONE -->
+        <div>
+          <label class="text-sm font-medium flex items-center gap-2 mb-1">
+            <i data-lucide="phone" class="w-4 h-4 text-gray-400"></i>
+            Phone Number
+          </label>
+          <input value="+1 (555) 123-4567"
+            class="w-full border rounded-xl px-4 py-2 focus:ring-2 focus:ring-primary outline-none">
+        </div>
+
+        <!-- ADDRESS -->
+        <div>
+          <label class="text-sm font-medium flex items-center gap-2 mb-1">
+            <i data-lucide="map-pin" class="w-4 h-4 text-gray-400"></i>
+            Address
+          </label>
+          <input value="123 Main Street, New York, NY 10001"
+            class="w-full border rounded-xl px-4 py-2 focus:ring-2 focus:ring-primary outline-none">
+        </div>
+
+        <!-- DOB -->
+        <div>
+          <label class="text-sm font-medium flex items-center gap-2 mb-1">
+            <i data-lucide="calendar" class="w-4 h-4 text-gray-400"></i>
+            Date of Birth
+          </label>
+          <input type="date" value="1990-05-15"
+            class="w-full border rounded-xl px-4 py-2 focus:ring-2 focus:ring-primary outline-none">
+        </div>
+
+        <!-- SAVE -->
+        <div class="flex justify-end pt-4 border-t">
+          <button
+            class="flex items-center gap-2 bg-primary text-white px-6 py-2 rounded-xl font-semibold hover:bg-blue-700">
+            <i data-lucide="save" class="w-4 h-4"></i>
+            Save Changes
+          </button>
+        </div>
+
+      </div>
+    </form>
+
+    <!-- SECURITY -->
+    <div class="bg-white rounded-2xl border p-8 mt-8">
+      <h3 class="text-xl font-semibold mb-6">Security</h3>
+
+      <div class="space-y-4">
+        <div class="flex items-center justify-between p-4 rounded-xl bg-slate-100">
+          <div>
+            <p class="font-medium">Password</p>
+            <p class="text-sm text-gray-500">Last changed 30 days ago</p>
+          </div>
+          <button class="border px-4 py-2 rounded-xl hover:bg-white font-semibold">
+            Change Password
+          </button>
+        </div>
+
+        <div class="flex items-center justify-between p-4 rounded-xl bg-slate-100">
+          <div>
+            <p class="font-medium">Two-Factor Authentication</p>
+            <p class="text-sm text-gray-500">Add an extra layer of security</p>
+          </div>
+          <button class="border px-4 py-2 rounded-xl hover:bg-white font-semibold">
+            Enable
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<script>
+  function go(page) {
+    window.location.href = page;
+  }
+  lucide.createIcons();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>HIMS – Health Insurance Made Simple</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="/assets/logo.svg" type="image/svg+xml">
+
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#2563eb'
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    html { scroll-behavior: smooth; }
+  </style>
+</head>
+
+<body id="top" class="bg-white text-gray-900">
+
+<!-- ================= NAVBAR ================= -->
+<header class="fixed top-0 w-full z-50 border-b bg-white/80 backdrop-blur">
+  <div class="max-w-7xl mx-auto h-16 flex items-center justify-between px-6">
+
+    <!-- Logo -->
+    <div class="flex items-center gap-2 font-bold text-lg text-primary">
+      <div class="w-9 h-9 rounded-full bg-primary flex items-center justify-center shadow">
+        <i data-lucide="shield" class="w-5 h-5 text-white"></i>
+      </div>
+      HIMS
+    </div>
+
+    <!-- Nav Links -->
+    <nav class="hidden md:flex gap-6 text-sm font-medium text-gray-600">
+      <a href="#top" class="hover:text-primary transition-colors">Home</a>
+      <a href="#features" class="hover:text-primary transition-colors">Features</a>
+      <a href="#contact" class="hover:text-primary transition-colors">Contact</a>
+    </nav>
+
+    <!-- Actions -->
+    <div class="flex items-center gap-4">
+      <a th:href="@{/login}"
+         class="text-sm font-medium hover:text-primary transition-colors">
+        Sign In
+      </a>
+      <a th:href="@{/register}"
+         class="px-5 py-2.5 rounded-xl bg-primary text-white font-semibold
+                shadow-lg hover:shadow-xl hover:-translate-y-0.5
+                transition-all duration-300">
+        Get Started
+      </a>
+    </div>
+  </div>
+</header>
+
+<!-- ================= HERO ================= -->
+<section class="pt-32 pb-20 px-4 relative overflow-hidden">
+  <div class="absolute inset-0 bg-gradient-to-br from-sky-50 via-white to-blue-50"></div>
+  <div class="absolute top-20 right-0 w-96 h-96 bg-sky-400/20 rounded-full blur-3xl"></div>
+  <div class="absolute bottom-0 left-0 w-96 h-96 bg-blue-400/20 rounded-full blur-3xl"></div>
+
+  <div class="relative z-10 max-w-7xl mx-auto text-center">
+
+    <div class="inline-flex items-center gap-2 bg-white px-4 py-2 rounded-full shadow border mb-8">
+      <i data-lucide="shield-check" class="w-4 h-4 text-primary"></i>
+      <span class="text-sm text-gray-600">Trusted by 50,000+ customers</span>
+    </div>
+
+    <h1 class="text-5xl md:text-7xl font-bold mb-6">
+      Health Insurance
+      <span class="block bg-gradient-to-r from-sky-500 to-blue-600 bg-clip-text text-transparent">
+        Made Simple
+      </span>
+    </h1>
+
+    <p class="text-xl text-gray-600 max-w-2xl mx-auto mb-10">
+      Manage your policies, submit claims, and track payments all in one
+      beautiful, intuitive platform designed for the modern age.
+    </p>
+
+    <div class="flex flex-col sm:flex-row gap-4 justify-center">
+      <a th:href="@{/register}"
+         class="inline-flex items-center justify-center px-8 py-4 rounded-xl
+                bg-primary text-white text-lg font-semibold
+                shadow-lg hover:shadow-xl hover:-translate-y-0.5
+                transition-all duration-300">
+        Get Started Free
+        <i data-lucide="arrow-right" class="ml-2 w-5 h-5"></i>
+      </a>
+
+      <a th:href="@{/login}"
+         class="inline-flex items-center justify-center px-8 py-4 rounded-xl
+                border text-lg hover:bg-gray-100 hover:-translate-y-0.5
+                transition-all duration-300">
+        Sign In
+      </a>
+    </div>
+
+    <div class="flex items-center justify-center gap-8 mt-12">
+      <div class="flex -space-x-3">
+        <div class="w-10 h-10 rounded-full bg-gradient-to-r from-sky-400 to-blue-500 border-2 border-white"></div>
+        <div class="w-10 h-10 rounded-full bg-gradient-to-r from-sky-400 to-blue-500 border-2 border-white"></div>
+        <div class="w-10 h-10 rounded-full bg-gradient-to-r from-sky-400 to-blue-500 border-2 border-white"></div>
+        <div class="w-10 h-10 rounded-full bg-gradient-to-r from-sky-400 to-blue-500 border-2 border-white"></div>
+      </div>
+
+      <div class="text-left">
+        <div class="flex text-amber-400">
+          <i data-lucide="star" class="fill-amber-400"></i>
+          <i data-lucide="star" class="fill-amber-400"></i>
+          <i data-lucide="star" class="fill-amber-400"></i>
+          <i data-lucide="star" class="fill-amber-400"></i>
+          <i data-lucide="star" class="fill-amber-400"></i>
+        </div>
+        <p class="text-sm text-gray-500">4.9/5 from 2,000+ reviews</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FEATURES ================= -->
+<section id="features" class="py-24 px-4 bg-white">
+  <div class="max-w-7xl mx-auto">
+
+    <div class="text-center mb-16">
+      <h2 class="text-4xl font-bold mb-4">Everything You Need</h2>
+      <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+        A complete suite of tools to manage your health insurance with confidence
+      </p>
+    </div>
+
+    <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+
+      <!-- Feature Card -->
+      <div class="p-6 rounded-2xl border bg-white shadow-sm
+                  hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+        <div class="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mb-6">
+          <i data-lucide="file-text" class="w-7 h-7 text-primary"></i>
+        </div>
+        <h3 class="text-xl font-semibold mb-3">Policy Management</h3>
+        <p class="text-gray-600">
+          Browse, compare, and manage all your insurance policies in one place with complete transparency.
+        </p>
+      </div>
+
+      <div class="p-6 rounded-2xl border bg-white shadow-sm
+                  hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+        <div class="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mb-6">
+          <i data-lucide="clipboard-list" class="w-7 h-7 text-primary"></i>
+        </div>
+        <h3 class="text-xl font-semibold mb-3">Easy Claims</h3>
+        <p class="text-gray-600">
+          Submit and track claims effortlessly with real-time updates.
+        </p>
+      </div>
+
+      <div class="p-6 rounded-2xl border bg-white shadow-sm
+                  hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+        <div class="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mb-6">
+          <i data-lucide="credit-card" class="w-7 h-7 text-primary"></i>
+        </div>
+        <h3 class="text-xl font-semibold mb-3">Secure Payments</h3>
+        <p class="text-gray-600">
+          Pay premiums securely with multiple payment options.
+        </p>
+      </div>
+
+      <div class="p-6 rounded-2xl border bg-white shadow-sm
+                  hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+        <div class="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mb-6">
+          <i data-lucide="headphones" class="w-7 h-7 text-primary"></i>
+        </div>
+        <h3 class="text-xl font-semibold mb-3">24/7 Support</h3>
+        <p class="text-gray-600">
+          Get help anytime with our dedicated support team.
+        </p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ================= BENEFITS ================= -->
+<section class="py-24 px-4 bg-gradient-to-br from-sky-500 to-blue-600 text-white">
+  <div class="max-w-7xl mx-auto grid lg:grid-cols-2 gap-16 items-center">
+
+    <div>
+      <h2 class="text-4xl font-bold mb-6">Why Choose HIMS?</h2>
+      <p class="text-xl text-white/80 mb-8">
+        We've reimagined health insurance management to be faster, simpler, and more transparent.
+      </p>
+
+      <ul class="space-y-4 text-lg">
+        <li class="flex items-center gap-3">
+          <i data-lucide="check-circle" class="text-emerald-300"></i>
+          Instant policy activation
+        </li>
+        <li class="flex items-center gap-3">
+          <i data-lucide="check-circle" class="text-emerald-300"></i>
+          Claims processed in 24–48 hours
+        </li>
+        <li class="flex items-center gap-3">
+          <i data-lucide="check-circle" class="text-emerald-300"></i>
+          Secure encrypted payments
+        </li>
+        <li class="flex items-center gap-3">
+          <i data-lucide="check-circle" class="text-emerald-300"></i>
+          Dedicated 24/7 support
+        </li>
+        <li class="flex items-center gap-3">
+          <i data-lucide="check-circle" class="text-emerald-300"></i>
+          Mobile-friendly experience
+        </li>
+      </ul>
+    </div>
+
+    <div class="grid grid-cols-2 gap-6 bg-white/10 backdrop-blur rounded-3xl p-8 border border-white/20">
+      <div class="text-center p-6 bg-white/10 rounded-2xl">
+        <p class="text-4xl font-bold">50K+</p>
+        <p class="text-white/70">Active Users</p>
+      </div>
+      <div class="text-center p-6 bg-white/10 rounded-2xl">
+        <p class="text-4xl font-bold">99%</p>
+        <p class="text-white/70">Claims Approved</p>
+      </div>
+      <div class="text-center p-6 bg-white/10 rounded-2xl">
+        <p class="text-4xl font-bold">24h</p>
+        <p class="text-white/70">Avg Response</p>
+      </div>
+      <div class="text-center p-6 bg-white/10 rounded-2xl">
+        <p class="text-4xl font-bold">4.9</p>
+        <p class="text-white/70">User Rating</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ================= TESTIMONIALS ================= -->
+<section class="py-24 px-4 bg-white">
+  <div class="max-w-7xl mx-auto">
+
+    <div class="text-center mb-16">
+      <h2 class="text-4xl font-bold mb-4">Loved by Thousands</h2>
+      <p class="text-xl text-gray-600">See what our customers have to say</p>
+    </div>
+
+    <div class="grid md:grid-cols-3 gap-8">
+
+      <!-- Testimonial -->
+      <div class="p-8 rounded-2xl border bg-white shadow-md
+                  hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+        <div class="flex text-amber-400 mb-4">
+          <i data-lucide="star" class="fill-amber-400"></i>
+          <i data-lucide="star" class="fill-amber-400"></i>
+          <i data-lucide="star" class="fill-amber-400"></i>
+          <i data-lucide="star" class="fill-amber-400"></i>
+          <i data-lucide="star" class="fill-amber-400"></i>
+        </div>
+        <p class="text-gray-600 mb-6">
+          “HIMS made managing my company's health insurance so simple. Claims are processed quickly.”
+        </p>
+        <div class="flex items-center gap-4">
+          <div class="w-12 h-12 rounded-full bg-gradient-to-r from-sky-500 to-blue-600"></div>
+          <div>
+            <p class="font-semibold">Sarah Johnson</p>
+            <p class="text-sm text-gray-500">Small Business Owner</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-8 rounded-2xl border bg-white shadow-md
+                  hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+        <div class="flex text-amber-400 mb-4">
+          <i data-lucide="star" class="fill-amber-400"></i>
+          <i data-lucide="star" class="fill-amber-400"></i>
+          <i data-lucide="star" class="fill-amber-400"></i>
+          <i data-lucide="star" class="fill-amber-400"></i>
+          <i data-lucide="star" class="fill-amber-400"></i>
+        </div>
+        <p class="text-gray-600 mb-6">
+          “Finally, an insurance platform that actually works! Submitting claims takes minutes.”
+        </p>
+        <div class="flex items-center gap-4">
+          <div class="w-12 h-12 rounded-full bg-gradient-to-r from-sky-500 to-blue-600"></div>
+          <div>
+            <p class="font-semibold">Michael Chen</p>
+            <p class="text-sm text-gray-500">Family Plan Holder</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-8 rounded-2xl border bg-white shadow-md
+                  hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+        <div class="flex text-amber-400 mb-4">
+          <i data-lucide="star" class="fill-amber-400"></i>
+          <i data-lucide="star" class="fill-amber-400"></i>
+          <i data-lucide="star" class="fill-amber-400"></i>
+          <i data-lucide="star" class="fill-amber-400"></i>
+          <i data-lucide="star" class="fill-amber-400"></i>
+        </div>
+        <p class="text-gray-600 mb-6">
+          “The mobile experience is fantastic. I can manage everything from my phone.”
+        </p>
+        <div class="flex items-center gap-4">
+          <div class="w-12 h-12 rounded-full bg-gradient-to-r from-sky-500 to-blue-600"></div>
+          <div>
+            <p class="font-semibold">Emily Rodriguez</p>
+            <p class="text-sm text-gray-500">Individual Policy Holder</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ================= CTA ================= -->
+<section class="py-24 px-4 bg-white">
+  <div class="max-w-4xl mx-auto text-center">
+    <h2 class="text-4xl font-bold mb-6">Ready to Get Started?</h2>
+    <p class="text-xl text-gray-600 mb-10">
+      Join thousands of satisfied customers who trust HIMS for their health insurance needs.
+    </p>
+    <div class="flex flex-col sm:flex-row gap-4 justify-center">
+      <a th:href="@{/register}"
+         class="inline-flex items-center justify-center px-8 py-4 rounded-xl
+                bg-primary text-white text-lg font-semibold
+                shadow-lg hover:shadow-xl hover:-translate-y-0.5
+                transition-all duration-300">
+        Create Free Account
+        <i data-lucide="arrow-right" class="ml-2 w-5 h-5"></i>
+      </a>
+      <a href="#contact"
+         class="inline-flex items-center justify-center px-8 py-4 rounded-xl
+                border text-lg hover:bg-gray-100 hover:-translate-y-0.5
+                transition-all duration-300">
+        Contact Sales
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CONTACT ================= -->
+<section id="contact" class="py-24 px-4 bg-gray-50">
+  <div class="max-w-4xl mx-auto">
+
+    <div class="text-center mb-12">
+      <h2 class="text-4xl font-bold mb-4">Contact Our Sales Team</h2>
+      <p class="text-xl text-gray-600">
+        Have questions? Our team is here to help you find the right plan.
+      </p>
+    </div>
+
+    <form class="bg-white p-8 rounded-2xl border shadow-md grid md:grid-cols-2 gap-6">
+      <input class="border px-4 py-3 rounded-xl" placeholder="Full Name">
+      <input class="border px-4 py-3 rounded-xl" placeholder="Email Address">
+      <input class="border px-4 py-3 rounded-xl" placeholder="Company">
+      <input class="border px-4 py-3 rounded-xl" placeholder="Phone Number">
+      <textarea class="border px-4 py-3 rounded-xl md:col-span-2 resize-none"
+                rows="4"
+                placeholder="Tell us about your needs..."></textarea>
+      <button class="md:col-span-2 bg-primary text-white py-3 rounded-xl font-semibold
+                     shadow-lg hover:shadow-xl hover:-translate-y-0.5
+                     transition-all duration-300">
+        Send Message
+      </button>
+    </form>
+
+  </div>
+</section>
+
+<!-- ================= FOOTER ================= -->
+<footer class="py-12 px-4 bg-gray-900 text-white/80">
+  <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
+    <div class="flex items-center gap-2">
+      <div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center">
+        <i data-lucide="shield" class="w-5 h-5 text-white"></i>
+      </div>
+      <span class="text-xl font-bold text-white">HIMS</span>
+    </div>
+    <p class="text-sm">© 2024 HIMS. All rights reserved.</p>
+  </div>
+</footer>
+
+<script>
+  lucide.createIcons();
+</script>
+
+</body>
+</html>

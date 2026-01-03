@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Customer Details</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" href="/assets/logo.svg" type="image/svg+xml">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="bg-bg">
+  <main class="ml-64 p-8">
+    <a href="/agent/customers" class="text-sm text-blue-600">← Back to customers</a>
+    <div class="bg-white rounded-2xl p-8 mt-4">
+      <h1 class="text-2xl font-bold mb-2" th:text="${customer.username}">Customer Name</h1>
+      <p class="text-sm text-muted mb-2">Email: <span th:text="${customer.email}">email@example.com</span></p>
+      <p class="text-sm text-muted mb-2">Assigned Policies: <span th:text="${policies != null ? policies.size() : 0}">0</span></p>
+
+      <div class="mt-6">
+        <h3 class="font-semibold mb-2">Policies</h3>
+        <div class="space-y-3">
+          <div th:each="p : ${policies}" class="flex items-center justify-between p-3 bg-slate-50 rounded-xl border border-slate-100">
+            <div>
+              <p class="text-sm font-bold text-slate-800" th:text="${p.coverageType}">Policy Name</p>
+              <p class="text-[10px] font-mono text-slate-400 tracking-tighter uppercase" th:text="${'PLCY-' + p.id}">PLCY-001</p>
+            </div>
+            <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-widest" th:text="${p.policyStatus}">Active</span>
+          </div>
+          <div th:if="${policies == null || policies.size() == 0}" class="text-sm text-slate-400 italic">No policies linked to this account.</div>
+        </div>
+      </div>
+    </div>
+  </main>
+</body>
+</html>

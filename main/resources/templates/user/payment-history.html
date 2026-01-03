@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Payment History – HIMS</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" href="/assets/logo.svg" type="image/svg+xml">
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Lucide -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: "#2563eb"
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .nav-item:hover {
+    background: #f1f5f9;
+  }
+  </style>
+</head>
+
+<body class="bg-slate-50 text-gray-900">
+
+<!-- ================= SIDEBAR (LOCKED UI) ================= -->
+<aside class="fixed top-0 left-0 w-64 h-full bg-white border-r flex flex-col">
+
+  <!-- LOGO -->
+  <div class="p-6 border-b flex items-center gap-3">
+    <div class="w-10 h-10 rounded-xl bg-primary flex items-center justify-center">
+      <i data-lucide="shield" class="text-white"></i>
+    </div>
+    <div>
+      <p class="font-bold text-lg">HIMS</p>
+      <p class="text-sm text-gray-500">User Portal</p>
+    </div>
+  </div>
+
+  <!-- NAV -->
+  <nav class="flex-1 p-4 space-y-1">
+    <div class="nav-item" onclick="go('/user/dashboard')">
+      <i data-lucide="layout-dashboard"></i>Dashboard
+    </div>
+    <div class="nav-item" onclick="go('/user/policies')">
+      <i data-lucide="file-text"></i>My Policies
+    </div>
+    <div class="nav-item" onclick="go('/user/claims')">
+      <i data-lucide="clipboard-list"></i>Claims
+    </div>
+    <div class="nav-item bg-primary/10 text-primary" onclick="go('/user/payments')">
+      <i data-lucide="credit-card"></i>Payments
+    </div>
+    <div class="nav-item" onclick="go('/user/support')">
+      <i data-lucide="headphones"></i>Support
+    </div>
+    <div class="nav-item" onclick="go('/user/profile')">
+      <i data-lucide="user"></i>Profile
+    </div>
+  </nav>
+
+  <!-- LOGOUT -->
+  <div class="p-4 border-t">
+    <button onclick="go('/login')"
+      class="w-full flex items-center gap-3 p-3 rounded-xl text-red-600 hover:bg-red-50 font-semibold">
+      <i data-lucide="log-out"></i>Logout
+    </button>
+  </div>
+</aside>
+
+<!-- ================= MAIN ================= -->
+<main class="ml-64 p-8">
+
+  <!-- BACK -->
+  <a th:href="@{/user/payments}"
+     class="inline-flex items-center gap-2 text-gray-500 hover:text-gray-900 mb-6 font-medium">
+    <i data-lucide="arrow-left" class="w-4 h-4"></i>
+    Back to Payments
+  </a>
+
+  <!-- HEADER -->
+  <div class="flex items-center justify-between mb-8">
+    <div>
+      <h1 class="text-3xl font-bold mb-1">Payment History</h1>
+      <p class="text-gray-500">View all your past transactions</p>
+    </div>
+
+    <button class="inline-flex items-center px-4 py-2 border rounded-xl font-semibold hover:bg-slate-50">
+      <i data-lucide="download" class="w-4 h-4 mr-2"></i>
+      Export
+    </button>
+  </div>
+
+  <!-- SEARCH -->
+  <div class="relative max-w-md mb-6">
+    <i data-lucide="search"
+       class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"></i>
+    <input
+      placeholder="Search payments..."
+      class="w-full pl-10 pr-4 py-2 border rounded-xl focus:ring-2 focus:ring-primary outline-none" />
+  </div>
+
+  <!-- ================= TABLE ================= -->
+  <div class="bg-white rounded-2xl border shadow-sm overflow-hidden">
+    <div class="overflow-x-auto">
+      <table class="w-full">
+        <thead class="bg-slate-100 text-sm text-gray-500">
+          <tr>
+            <th class="px-6 py-4 text-left">Transaction ID</th>
+            <th class="px-6 py-4 text-left">Policy</th>
+            <th class="px-6 py-4 text-left">Amount</th>
+            <th class="px-6 py-4 text-left">Date</th>
+            <th class="px-6 py-4 text-left">Payment Method</th>
+            <th class="px-6 py-4 text-left">Status</th>
+            <th class="px-6 py-4 text-right">Receipt</th>
+          </tr>
+        </thead>
+
+        <tbody>
+
+          <!-- ROW -->
+          <tr class="border-t hover:bg-slate-50 transition">
+            <td class="px-6 py-4">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center">
+                  <i data-lucide="credit-card" class="w-5 h-5 text-primary"></i>
+                </div>
+                <span class="font-mono font-medium">PAY-2024-001</span>
+              </div>
+            </td>
+
+            <td class="px-6 py-4">
+              <p class="font-semibold">Health Plus Premium</p>
+              <p class="text-xs text-gray-500">POL-2024-001</p>
+            </td>
+
+            <td class="px-6 py-4 font-semibold">$150.00</td>
+
+            <td class="px-6 py-4 text-gray-500">Nov 1, 2024</td>
+
+            <td class="px-6 py-4 text-sm text-gray-600">Visa •••• 4242</td>
+
+            <td class="px-6 py-4">
+              <span class="px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-700">
+                Approved
+              </span>
+            </td>
+
+            <td class="px-6 py-4 text-right">
+              <button class="p-2 rounded-lg hover:bg-slate-100">
+                <i data-lucide="download" class="w-4 h-4"></i>
+              </button>
+            </td>
+          </tr>
+
+          <!-- Duplicate rows can be added exactly same -->
+
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</main>
+
+<script>
+  function go(p){ window.location.href = p }
+  function logout(){ window.location.href = '/logout' }
+  lucide.createIcons();
+</script>
+
+</body>
+</html>

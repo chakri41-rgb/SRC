@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <title>Policies – Admin Portal</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" href="/assets/logo.svg" type="image/svg+xml">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            sidebar: "#0f172a",
+            bg: "#f8fafc",
+            card: "#ffffff",
+            border: "#e5e7eb",
+            muted: "#64748b",
+            success: "#16a34a",
+            warning: "#f59e0b"
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+    body { font-family: 'Inter', sans-serif; }
+    .gradient-primary { background: linear-gradient(135deg, #2563eb, #1d4ed8); }
+    .bg-card { overflow: visible !important; }
+  </style>
+</head>
+
+<body class="bg-bg flex">
+
+<aside class="fixed inset-y-0 left-0 w-64 bg-sidebar text-white flex flex-col z-40">
+  <div class="p-6 flex items-center gap-3">
+    <div class="w-10 h-10 gradient-primary rounded-xl flex items-center justify-center">
+      <i data-lucide="shield"></i>
+    </div>
+    <div>
+      <h1 class="font-bold leading-tight">HIMS</h1>
+      <p class="text-xs text-white/60">Admin Portal</p>
+    </div>
+  </div>
+
+  <nav class="px-4 space-y-1 flex-1">
+    <button onclick="go('/admin/dashboard')" class="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-white/10 transition">
+      <i data-lucide="layout-dashboard"></i><span>Dashboard</span>
+    </button>
+    <button onclick="go('/admin/users')" class="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-white/10 transition">
+      <i data-lucide="users"></i><span>Users</span>
+    </button>
+    <button class="w-full flex items-center gap-3 p-3 rounded-xl bg-white/10 transition">
+      <i data-lucide="file-text"></i><span>Policies</span>
+    </button>
+    <button onclick="go('/admin/claims')" class="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-white/10 transition">
+      <i data-lucide="clipboard-list"></i><span>Claims</span>
+    </button>
+    <button onclick="go('/admin/support')" class="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-white/10 transition">
+      <i data-lucide="headphones"></i><span>Support</span>
+    </button>
+    <button onclick="go('/admin/analytics')" class="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-white/10 transition">
+      <i data-lucide="bar-chart-3"></i><span>Analytics</span>
+    </button>
+    <button onclick="go('/admin/settings')" class="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-white/10 transition">
+      <i data-lucide="settings"></i><span>Settings</span>
+    </button>
+  </nav>
+
+  <div class="p-4 border-t border-white/10">
+    <button onclick="logout()" class="w-full flex items-center gap-3 p-3 rounded-xl text-red-400 hover:bg-red-500/10 font-semibold transition">
+      <i data-lucide="log-out"></i>Logout
+    </button>
+  </div>
+</aside>
+
+<main class="ml-64 flex-1 p-8">
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
+    <div>
+      <h1 class="text-3xl font-bold text-slate-900">Policy Plans</h1>
+      <p class="text-muted">Manage marketplace insurance products</p>
+    </div>
+    <div class="flex gap-3">
+      <button onclick="location.reload()" class="px-4 py-2 border border-slate-200 rounded-xl flex items-center gap-2 hover:bg-slate-50 transition-all font-medium text-slate-600">
+        <i data-lucide="refresh-cw" class="w-4 h-4"></i> Refresh
+      </button>
+      <button onclick="openCreatePolicy()" class="px-5 py-2 bg-sidebar text-white rounded-xl flex items-center gap-2 hover:bg-slate-800 transition-all font-bold shadow-lg">
+        <i data-lucide="plus-circle" class="w-4 h-4"></i> Create New Plan
+      </button>
+    </div>
+  </div>
+
+  <div th:if="${success}" class="mb-6 p-4 rounded-2xl bg-emerald-50 border border-emerald-100 text-emerald-700 flex items-center gap-3 shadow-sm">
+    <i data-lucide="check-circle" class="w-5 h-5"></i>
+    <span class="font-medium" th:text="${success}"></span>
+  </div>
+
+  <div class="bg-card rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+    <div class="relative mb-6">
+  <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5"></i>
+  <input type="text" id="policySearch" oninput="filterPolicies()" placeholder="Search by plan name or ID..." 
+         class="w-full pl-12 pr-4 py-3.5 rounded-2xl border border-slate-200 bg-card outline-none focus:ring-4 focus:ring-blue-500/10 transition-all" />
+</div>
+    <table class="w-full border-collapse">
+      <thead>
+        <tr class="text-left border-b border-slate-100 bg-slate-50/50">
+          <th class="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">Plan ID</th>
+          <th class="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">Plan Name</th>
+          <th class="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest hidden sm:table-cell">Premium</th>
+          <th class="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest hidden lg:table-cell">Coverage</th>
+          <th class="px-6 py-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest">Status</th>
+          <th class="px-6 py-4 text-right text-[11px] font-bold text-slate-400 uppercase tracking-widest">Actions</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-slate-50" th:if="${policies != null}">
+        <tr th:each="p : ${policies}" class="hover:bg-slate-50/50 transition-colors">
+          <td class="px-6 py-5 font-mono text-xs text-blue-600 font-bold" th:text="${p.policyNumber}">PLAN-001</td>
+          <td class="px-6 py-5 font-bold text-slate-900" th:text="${p.coverageType}">Health Plus</td>
+          <td class="px-6 py-5 hidden sm:table-cell text-emerald-600 font-bold" th:text="${p.premiumAmount != null ? '$' + p.premiumAmount : '—'}"></td>
+          <td class="px-6 py-5 hidden lg:table-cell text-slate-700 font-semibold" th:text="${p.coverageAmount != null ? '$' + p.coverageAmount : '—'}"></td>
+          <td class="px-6 py-5">
+            <span th:classappend="${p.policyStatus == 'ACTIVE'} ? 'bg-green-100 text-green-700' : 'bg-slate-100 text-slate-500'" 
+                  class="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest" th:text="${p.policyStatus}">ACTIVE</span>
+          </td>
+          <td class="px-6 py-5 text-right">
+            <div class="flex justify-end gap-2">
+              <a th:href="@{/admin/policies/{id}(id=${p.id})}" 
+   class="p-2 hover:bg-blue-50 text-blue-600 rounded-lg transition-colors inline-block">
+    <i data-lucide="eye" class="w-4 h-4"></i>
+</a>
+              <button th:onclick="openEdit([[${p.id}]], [[${p.coverageType}]], [[${p.premiumAmount}]], [[${p.coverageAmount}]], [[${p.startDate}]], [[${p.endDate}]])" 
+        class="p-2 hover:bg-amber-50 text-amber-600 rounded-lg transition-colors">
+    <i data-lucide="edit-3" class="w-4 h-4"></i>
+</button>
+              <form th:action="@{/admin/policies/delete/{id}(id=${p.id})}" method="post" style="display:inline" onsubmit="return confirm('Remove this plan?');">
+                <button type="submit" class="p-2 hover:bg-red-50 text-red-600 rounded-lg transition-colors"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+              </form>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <div th:if="${policies == null or policies.size() == 0}" class="py-20 text-center">
+        <i data-lucide="file-x" class="w-12 h-12 text-slate-300 mx-auto mb-4"></i>
+        <p class="text-slate-500 font-medium">No marketplace policies found.</p>
+    </div>
+  </div>
+</main>
+
+<div id="createPolicyModal" class="fixed inset-0 hidden items-center justify-center bg-slate-900/60 backdrop-blur-sm z-50 p-4">
+  <div class="bg-white w-full max-w-lg rounded-[40px] p-10 relative shadow-2xl">
+    <button type="button" onclick="closeModals()" class="absolute top-8 right-8 text-slate-300 hover:text-slate-600 transition-colors z-[60]">
+        <i data-lucide="x" class="w-6 h-6"></i>
+    </button>
+    <h2 class="text-3xl font-bold text-slate-900 mb-2">New Insurance Plan</h2>
+    <p class="text-sm text-slate-500 mb-10">Configure a plan to be published in the marketplace.</p>
+    <form th:action="@{/admin/policies}" method="post" class="space-y-6">
+      <div class="space-y-1">
+        <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Plan Name</label>
+        <input name="policyName" type="text" placeholder="e.g., Premium Family Health" required class="w-full p-4 border border-slate-200 rounded-2xl outline-none focus:ring-4 focus:ring-blue-500/10 transition-all" />
+      </div>
+      <div class="grid grid-cols-2 gap-4">
+        <div class="space-y-1">
+          <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Premium ($/mo)</label>
+          <input name="premium" type="number" step="0.01" required class="w-full p-4 border border-slate-200 rounded-2xl outline-none" />
+        </div>
+        <div class="space-y-1">
+          <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Total Coverage ($)</label>
+          <input name="coverage" type="number" step="0.01" required class="w-full p-4 border border-slate-200 rounded-2xl outline-none" />
+        </div>
+      </div>
+      <div class="grid grid-cols-2 gap-4">
+        <div class="space-y-1">
+          <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Market Start</label>
+          <input name="startDate" type="date" required class="w-full p-4 border border-slate-200 rounded-2xl outline-none" />
+        </div>
+        <div class="space-y-1">
+          <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Market End</label>
+          <input name="endDate" type="date" required class="w-full p-4 border border-slate-200 rounded-2xl outline-none" />
+        </div>
+      </div>
+      <button type="submit" class="w-full bg-blue-600 text-white py-5 rounded-[24px] font-bold mt-4 hover:bg-blue-700 transition-all shadow-xl shadow-blue-500/30">Publish Plan</button>
+    </form>
+  </div>
+</div>
+
+<div id="viewPolicyModal" class="fixed inset-0 hidden items-center justify-center bg-slate-900/60 backdrop-blur-sm z-50 p-4">
+  <div class="bg-white max-w-md w-full rounded-[40px] p-10 relative shadow-2xl">
+    <button type="button" onclick="closeModals()" class="absolute top-8 right-8 text-slate-300 hover:text-slate-600 transition-colors z-[60]">
+      <i data-lucide="x" class="w-6 h-6"></i>
+    </button>
+    
+    <h3 class="text-[11px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-10 text-center">Plan Details</h3>
+    <div class="flex flex-col items-center mb-10">
+      <div class="w-20 h-20 rounded-2xl gradient-primary flex items-center justify-center text-white mb-4 shadow-xl shadow-blue-500/20">
+        <i data-lucide="file-text" class="w-10 h-10"></i>
+      </div>
+      <h2 id="view-plan-name" class="text-3xl font-bold text-slate-900 tracking-tight text-center"></h2>
+      <span id="view-status" class="mt-2 bg-green-100 text-green-700 px-4 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest"></span>
+    </div>
+
+    <div class="grid grid-cols-2 gap-y-8 mb-10 border-t border-slate-50 pt-10 px-2">
+      <div><p class="text-[10px] font-bold text-slate-400 uppercase mb-1">Monthly Premium</p><p id="view-premium" class="font-bold text-emerald-600 text-lg"></p></div>
+      <div><p class="text-[10px] font-bold text-slate-400 uppercase mb-1">Total Coverage</p><p id="view-coverage" class="font-bold text-slate-700 text-lg"></p></div>
+      <div><p class="text-[10px] font-bold text-slate-400 uppercase mb-1">Market Launch</p><p id="view-start" class="font-semibold text-slate-600 text-sm"></p></div>
+      <div><p class="text-[10px] font-bold text-slate-400 uppercase mb-1">Expiry Date</p><p id="view-end" class="font-semibold text-slate-600 text-sm"></p></div>
+    </div>
+    
+    <button onclick="closeModals()" class="w-full bg-slate-900 text-white py-5 rounded-[24px] font-bold hover:bg-slate-800 transition-all shadow-xl">Done</button>
+  </div>
+</div>
+<div id="editPolicyModal" class="fixed inset-0 hidden items-center justify-center bg-slate-900/60 backdrop-blur-sm z-50 p-4">
+  <div class="bg-white w-full max-w-lg rounded-[40px] p-10 relative shadow-2xl">
+    <button type="button" onclick="closeModals()" class="absolute top-8 right-8 text-slate-300 hover:text-slate-600 z-[60]"><i data-lucide="x"></i></button>
+    <h2 class="text-3xl font-bold text-slate-900 mb-8 text-center">Edit Policy Plan</h2>
+    
+    <form th:action="@{/admin/policies/edit}" method="post" class="space-y-6">
+      <input type="hidden" id="edit-policy-id" name="id" />
+      
+      <div>
+        <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-2">Plan Name</label>
+        <input type="text" id="edit-name" name="policyName" class="w-full p-4 border border-slate-200 rounded-2xl outline-none" required />
+      </div>
+
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-2">Premium ($)</label>
+          <input type="number" step="0.01" id="edit-premium" name="premium" class="w-full p-4 border border-slate-200 rounded-2xl outline-none" required />
+        </div>
+        <div>
+          <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-2">Coverage ($)</label>
+          <input type="number" step="0.01" id="edit-coverage" name="coverage" class="w-full p-4 border border-slate-200 rounded-2xl outline-none" required />
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-2">Start Date</label>
+          <input type="date" id="edit-start" name="startDate" class="w-full p-4 border border-slate-200 rounded-2xl outline-none" required />
+        </div>
+        <div>
+          <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-2">End Date</label>
+          <input type="date" id="edit-end" name="endDate" class="w-full p-4 border border-slate-200 rounded-2xl outline-none" required />
+        </div>
+      </div>
+
+      <button type="submit" class="w-full bg-blue-600 text-white py-5 rounded-[24px] font-bold hover:bg-blue-700 shadow-xl shadow-blue-500/20">Save All Changes</button>
+    </form>
+  </div>
+</div>
+
+<script>
+  lucide.createIcons();
+
+  function go(url) { window.location.href = url; }
+  function logout() { location.href = '/logout'; }
+
+  function openCreatePolicy() {
+    document.getElementById("createPolicyModal").classList.replace('hidden', 'flex');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function openViewPlan(name, premium, coverage, status, start, end) {
+    document.getElementById('view-plan-name').innerText = name;
+    document.getElementById('view-premium').innerText = '$' + premium;
+    document.getElementById('view-coverage').innerText = '$' + coverage;
+    document.getElementById('view-status').innerText = status;
+    document.getElementById('view-start').innerText = start;
+    document.getElementById('view-end').innerText = end;
+    
+    document.getElementById('viewPolicyModal').classList.replace('hidden', 'flex');
+    document.body.style.overflow = 'hidden';
+  }
+// Function for Real-time Search
+function filterPolicies() {
+    const query = document.getElementById('policySearch').value.toLowerCase();
+    const rows = document.querySelectorAll('tbody tr');
+    rows.forEach(row => {
+        const text = row.innerText.toLowerCase();
+        row.style.display = text.includes(query) ? '' : 'none';
+    });
+}
+// Function to Open Edit Modal and fill data
+function openEdit(id, name, premium, coverage, start, end) {
+    document.getElementById('edit-policy-id').value = id;
+    document.getElementById('edit-name').value = name;
+    document.getElementById('edit-premium').value = premium;
+    document.getElementById('edit-coverage').value = coverage;
+    
+    // Clean dates to YYYY-MM-DD format
+    if(start) document.getElementById('edit-start').value = start.split('T')[0];
+    if(end) document.getElementById('edit-end').value = end.split('T')[0];
+
+    document.getElementById('editPolicyModal').classList.replace('hidden', 'flex');
+    document.body.style.overflow = 'hidden';
+}
+// Ensure closeModals targets all modal IDs
+function closeModals() {
+    document.getElementById('createPolicyModal').classList.replace('flex', 'hidden');
+    document.getElementById('viewPolicyModal').classList.replace('flex', 'hidden');
+    document.getElementById('editPolicyModal').classList.replace('flex', 'hidden');
+    document.body.style.overflow = 'auto';
+}
+  window.onclick = function(event) {
+    if (event.target.id === "createPolicyModal" || event.target.id === "viewPolicyModal") closeModals();
+  }
+</script>
+
+</body>
+</html>

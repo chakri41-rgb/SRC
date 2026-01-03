@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HIMS Agent Portal - Dashboard</title>
+      <link rel="icon" href="/assets/logo.svg" type="image/svg+xml">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #1e293b; }
+
+        /* KPI Card Hover Effect */
+        .kpi-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 2px solid transparent;
+        }
+        .kpi-card:hover {
+            transform: translateY(-5px);
+            border-color: #3b82f6;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            background-color: #ffffff;
+        }
+
+        /* Sidebar Active State */
+        .nav-active { 
+            background: linear-gradient(to right, rgba(16, 185, 129, 0.1), rgba(20, 184, 166, 0.1)); 
+            color: #059669; 
+            font-weight: 600;
+        }
+
+        /* Modal Overlay */
+        .hidden-modal { display: none !important; }
+        
+        /* Mobile Overlay */
+        #sidebarOverlay.active { display: block !important; }
+    </style>
+</head>
+<body class="min-h-screen">
+
+   <header id="mobileHeader"
+  class="fixed top-0 left-0 right-0 h-16 bg-white border-b border-gray-200 flex items-center justify-between px-4 z-30 lg:hidden">
+
+  <a href="#"
+     class="flex items-center gap-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500"
+     aria-label="HIMS Agent Portal Home">
+    <div class="w-8 h-8 rounded-lg bg-gradient-to-r from-emerald-500 to-teal-600 flex items-center justify-center">
+      <i data-lucide="shield" class="w-5 h-5 text-white"></i>
+    </div>
+    <span class="text-lg font-bold text-gray-900">HIMS Agent</span>
+  </a>
+
+  <button onclick="toggleSidebar(true)"
+    class="p-2 rounded-lg hover:bg-gray-100"
+    aria-label="Open navigation menu">
+    <i data-lucide="menu" class="w-6 h-6"></i>
+  </button>
+</header>
+
+<!-- ===== Mobile Overlay ===== -->
+<div id="sidebarOverlay"
+  class="fixed inset-0 bg-black/50 z-40 hidden lg:hidden"
+  onclick="toggleSidebar(false)">
+</div>
+
+<!-- ===== Sidebar (AgentSidebar) ===== -->
+<aside id="agentSidebar"
+  class="fixed left-0 top-0 h-screen w-64 bg-white border-r border-gray-200 flex flex-col z-50
+         transition-transform duration-300 ease-in-out
+         -translate-x-full lg:translate-x-0">
+
+  <!-- Header -->
+  <div class="p-6 border-b border-gray-200">
+    <div class="flex items-center justify-between">
+      <a href="#"
+         class="flex items-center gap-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500"
+         aria-label="HIMS Agent Portal Home">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 flex items-center justify-center">
+          <i data-lucide="shield" class="w-6 h-6 text-white"></i>
+        </div>
+        <div>
+          <span class="text-lg font-bold text-gray-900">HIMS</span>
+          <p class="text-xs text-gray-500">Agent Portal</p>
+        </div>
+      </a>
+
+      <!-- Close (mobile) -->
+      <button onclick="toggleSidebar(false)"
+        class="lg:hidden p-2 rounded-lg hover:bg-gray-100"
+        aria-label="Close navigation">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <nav class="flex-1 px-4 py-4 space-y-1" aria-label="Main menu">
+
+    <!-- Agent Dashboard  (ACTIVE)-->
+    <a th:href="@{/agent/dashboard}" class="flex items-center gap-3 px-4 py-3 rounded-xl
+             bg-gradient-to-r from-emerald-500/10 to-teal-600/10
+             text-emerald-600 font-medium
+             transition-all duration-200">
+      <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
+      <span>Agent Dashboard</span>
+    </a>
+
+    <!-- Policies -->
+    <a th:href="@{/agent/policies}" class="flex items-center gap-3 px-4 py-3 rounded-xl
+             text-gray-500 hover:text-gray-900 hover:bg-gray-100
+             transition-all duration-200"
+      aria-current="page">
+      <i data-lucide="file-text" class="w-5 h-5"></i>
+      <span>Policies</span>
+    </a>
+
+    <!-- Claims -->
+    <a th:href="@{/agent/claims}" class="flex items-center gap-3 px-4 py-3 rounded-xl
+             text-gray-500 hover:text-gray-900 hover:bg-gray-100
+             transition-all duration-200">
+      <i data-lucide="clipboard-list" class="w-5 h-5"></i>
+      <span>Claims</span>
+    </a>
+
+    <!-- Customers -->
+    <a th:href="@{/agent/customers}" class="flex items-center gap-3 px-4 py-3 rounded-xl
+             text-gray-500 hover:text-gray-900 hover:bg-gray-100
+             transition-all duration-200">
+      <i data-lucide="user" class="w-5 h-5"></i>
+      <span>Customers</span>
+    </a>
+
+    <!-- Support -->
+    <a th:href="@{/agent/support}" class="flex items-center gap-3 px-4 py-3 rounded-xl
+             text-gray-500 hover:text-gray-900 hover:bg-gray-100
+             transition-all duration-200">
+      <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
+      <span>Support</span>
+    </a>
+
+    <!-- Profile -->
+    <a th:href="@{/agent/profile}" class="flex items-center gap-3 px-4 py-3 rounded-xl
+             text-gray-500 hover:text-gray-900 hover:bg-gray-100
+             transition-all duration-200">
+      <i data-lucide="user" class="w-5 h-5"></i>
+      <span>Profile</span>
+    </a>
+
+  </nav>
+
+  <!-- Logout -->
+  <div class="p-4 border-t border-gray-200">
+    <button onclick="logout()"
+      class="flex items-center gap-3 px-4 py-3 w-full rounded-xl
+             text-red-600 hover:bg-red-50
+             transition-all duration-200">
+      <i data-lucide="log-out" class="w-5 h-5"></i>
+      <span>Logout</span>
+    </button>
+  </div>
+</aside>
+
+
+    <main class="lg:ml-64 p-4 sm:p-8 pt-20 lg:pt-8">
+        
+        <header class="flex items-center gap-4 mb-8">
+            <div class="w-14 h-14 bg-emerald-500 rounded-2xl flex items-center justify-center shadow-lg shadow-emerald-100">
+                <i data-lucide="trending-up" class="text-white w-7 h-7"></i>
+            </div>
+            <div>
+                <h1 class="text-3xl font-bold text-slate-900">Agent Dashboard</h1>
+                <p class="text-slate-400 text-sm font-medium">Manage policies, review claims, and assist customers</p>
+            </div>
+        </header>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+            <div class="kpi-card bg-white p-6 rounded-[32px] border border-slate-100 shadow-sm">
+                <div class="flex justify-between items-start mb-4">
+                    <span class="text-slate-400 text-sm font-semibold">Assigned Policies</span>
+                    <div class="p-2 bg-sky-50 rounded-xl text-sky-500"><i data-lucide="file-text" class="w-5 h-5"></i></div>
+                </div>
+                <div class="text-4xl font-bold mb-1" th:text="${policies != null ? policies.size() : 0}">0</div>
+                <p class="text-xs text-slate-400 font-medium tracking-wide">Under management</p>
+            </div>
+            <div class="kpi-card bg-white p-6 rounded-[32px] border border-slate-100 shadow-sm">
+                <div class="flex justify-between items-start mb-4">
+                    <span class="text-slate-400 text-sm font-semibold">Pending Claims</span>
+                    <div class="p-2 bg-sky-50 rounded-xl text-sky-500"><i data-lucide="clock" class="w-5 h-5"></i></div>
+                </div>
+                <div class="text-4xl font-bold mb-1" th:text="${pendingClaimsCount}">0</div>
+                <p class="text-xs text-red-500 font-bold uppercase tracking-wide">Requires review</p>
+            </div>
+            <div class="kpi-card bg-white p-6 rounded-[32px] border border-slate-100 shadow-sm">
+                <div class="flex justify-between items-start mb-4">
+                    <span class="text-slate-400 text-sm font-semibold">Approved Today</span>
+                    <div class="p-2 bg-sky-50 rounded-xl text-sky-500"><i data-lucide="check-circle" class="w-5 h-5"></i></div>
+                </div>
+                <div class="text-4xl font-bold mb-1" th:text="${approvedToday}">0</div>
+                <p class="text-xs text-emerald-500 font-bold uppercase tracking-wide">Claims processed</p>
+            </div>
+            <div class="kpi-card bg-white p-6 rounded-[32px] border border-slate-100 shadow-sm">
+                <div class="flex justify-between items-start mb-4">
+                    <span class="text-slate-400 text-sm font-semibold">Rejected Today</span>
+                    <div class="p-2 bg-sky-50 rounded-xl text-sky-500"><i data-lucide="x-circle" class="w-5 h-5"></i></div>
+                </div>
+                <div class="text-4xl font-bold mb-1" th:text="${rejectedToday}">0</div>
+                <p class="text-xs text-slate-400 font-medium tracking-wide">Claims declined</p>
+            </div>
+        </div>
+
+        <h3 class="text-xl font-bold mb-6 px-1">Quick Actions</h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+            <div class="bg-white p-6 rounded-[32px] border border-slate-100 shadow-sm cursor-pointer group transition-all hover:border-emerald-500">
+                <div class="w-12 h-12 bg-orange-500 text-white rounded-2xl flex items-center justify-center mb-6 shadow-lg shadow-orange-100 transition-transform group-hover:scale-110">
+                    <i data-lucide="clipboard-list" class="w-6 h-6"></i>
+                </div>
+                <p class="text-slate-900 font-bold mb-1">Review Claims</p>
+                <div class="flex justify-between items-center">
+                    <span class="text-2xl font-bold">4</span>
+                    <i data-lucide="arrow-right" class="w-4 h-4 text-slate-300 group-hover:translate-x-1 transition-transform"></i>
+                </div>
+            </div>
+            <div class="bg-white p-6 rounded-[32px] border border-slate-100 shadow-sm cursor-pointer group transition-all hover:border-emerald-500">
+                <div class="w-12 h-12 bg-blue-600 text-white rounded-2xl flex items-center justify-center mb-6 shadow-lg shadow-blue-100 transition-transform group-hover:scale-110">
+                    <i data-lucide="users" class="w-6 h-6"></i>
+                </div>
+                <p class="text-slate-900 font-bold mb-1">View Customers</p>
+                <div class="flex justify-between items-center">
+                    <span class="text-2xl font-bold">4</span>
+                    <i data-lucide="arrow-right" class="w-4 h-4 text-slate-300 group-hover:translate-x-1 transition-transform"></i>
+                </div>
+            </div>
+            <div class="bg-white p-6 rounded-[32px] border border-slate-100 shadow-sm cursor-pointer group transition-all hover:border-emerald-500">
+                <div class="w-12 h-12 bg-emerald-500 text-white rounded-2xl flex items-center justify-center mb-6 shadow-lg shadow-emerald-100 transition-transform group-hover:scale-110">
+                    <i data-lucide="book-open" class="w-6 h-6"></i>
+                </div>
+                <p class="text-slate-900 font-bold mb-1">Policy Assistance</p>
+                <div class="flex justify-between items-center">
+                    <span class="text-2xl font-bold" th:text="${policies != null ? policies.size() : 0}">0</span>
+                    <i data-lucide="arrow-right" class="w-4 h-4 text-slate-300 group-hover:translate-x-1 transition-transform"></i>
+                </div>
+            </div>
+            <div class="bg-white p-6 rounded-[32px] border border-slate-100 shadow-sm cursor-pointer group transition-all hover:border-emerald-500">
+                <div class="w-12 h-12 bg-purple-500 text-white rounded-2xl flex items-center justify-center mb-6 shadow-lg shadow-purple-100 transition-transform group-hover:scale-110">
+                    <i data-lucide="alert-circle" class="w-6 h-6"></i>
+                </div>
+                <p class="text-slate-900 font-bold mb-1">Support Escalations</p>
+                <div class="flex justify-between items-center">
+                    <span class="text-2xl font-bold" th:text="${tickets != null ? tickets.size() : 0}">0</span>
+                    <i data-lucide="arrow-right" class="w-4 h-4 text-slate-300 group-hover:translate-x-1 transition-transform"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+            <section>
+                <div class="flex justify-between items-center mb-6 px-2">
+                    <h3 class="text-xl font-bold text-slate-900">Claims Pending Review</h3>
+                    <button class="text-xs font-bold text-slate-400 hover:text-emerald-600 flex items-center gap-1 uppercase tracking-widest">View All <i data-lucide="chevron-right" class="w-3 h-3"></i></button>
+                </div>
+                <div class="space-y-4">
+                    <div th:if="${pendingClaims.empty}" class="p-6 text-sm text-slate-500 bg-white rounded-xl border">No pending claims</div>
+                    <div th:each="c : ${pendingClaims}" class="bg-white p-6 rounded-[32px] border border-slate-100 shadow-sm">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="text-[10px] font-bold font-mono text-slate-300 tracking-tighter uppercase" th:text="${'CLM-' + c.id}">CLM-000</span>
+                            <span class="bg-amber-100 text-amber-600 text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-widest" th:text="${c.claimStatus}">PENDING</span>
+                        </div>
+                        <h4 class="text-lg font-bold" th:text="${c.policy.user != null ? c.policy.user.username : 'Unknown'}">John Doe</h4>
+                        <p class="text-xs text-slate-400 font-semibold mb-6" th:text="${c.policy.coverageType + ' • $' + c.claimAmount}">Lab Tests • $0.00</p>
+                        <div class="flex gap-3">
+                            <button type="button" th:onclick="|processClaim(${c.id}, 'approve')|" class="flex-1 bg-gradient-to-r from-blue-600 to-blue-500 text-white font-bold py-3.5 rounded-2xl text-sm shadow-lg shadow-blue-100 hover:opacity-90 transition-all flex items-center justify-center gap-2">
+                                <i data-lucide="check-circle-2" class="w-4 h-4"></i> Approve
+                            </button>
+                            <button type="button" th:onclick="|processClaim(${c.id}, 'reject')|" class="flex-1 bg-gradient-to-r from-red-500 to-red-400 text-white font-bold py-3.5 rounded-2xl text-sm shadow-lg shadow-red-100 hover:opacity-90 transition-all flex items-center justify-center gap-2">
+                                <i data-lucide="x-circle" class="w-4 h-4"></i> Reject
+                            </button>
+                            <button type="button" th:onclick="|openModal('CLM-${c.id}', 'POL-${c.policy.id}', '${c.policy.user != null ? c.policy.user.username : 'Unknown'}', '${c.policy.coverageType}', '${c.claimAmount}', '')|" class="px-4 border border-slate-100 rounded-2xl text-slate-300 hover:bg-slate-50 transition-colors">
+                                <i data-lucide="eye" class="w-5 h-5"></i>
+                            </button>
+                            <button type="button" th:onclick="|deleteClaim(${c.id})|" class="px-4 border border-slate-100 rounded-2xl text-red-500 hover:bg-red-50 transition-colors">Delete</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <div class="flex justify-between items-center mb-6 px-2">
+                    <h3 class="text-xl font-bold text-slate-900">Support Escalations</h3>
+                    <button class="text-xs font-bold text-slate-400 hover:text-emerald-600 flex items-center gap-1 uppercase tracking-widest">View All <i data-lucide="chevron-right" class="w-3 h-3"></i></button>
+                </div>
+                <div class="bg-white p-6 rounded-[32px] border border-slate-100 shadow-sm h-full flex flex-col">
+                    <div class="flex justify-between items-center mb-1">
+                        <span class="text-[10px] font-bold font-mono text-slate-300 tracking-tighter uppercase">TKT-001</span>
+                        <span class="bg-red-100 text-red-500 text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-widest">high</span>
+                    </div>
+                    <h4 class="text-lg font-bold text-slate-900">Claim processing delay</h4>
+                    <p class="text-xs text-slate-400 font-semibold mb-6">John Doe • 2024-11-20</p>
+                    <button class="mt-auto w-full py-4 border-2 border-slate-50 text-slate-700 font-bold rounded-2xl hover:bg-slate-50 transition-colors text-sm">
+                        Review Ticket
+                    </button>
+                </div>
+            </section>
+        </div>
+
+        <section class="bg-white rounded-[32px] border border-slate-100 shadow-sm overflow-hidden mb-12">
+            <div class="px-8 py-6 flex justify-between items-center border-b border-slate-50">
+                <h3 class="text-xl font-bold text-slate-900">Assigned Customers</h3>
+                <button class="text-xs font-bold text-slate-400 hover:text-emerald-600 flex items-center gap-1 uppercase tracking-widest">View All <i data-lucide="chevron-right" class="w-3 h-3"></i></button>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left">
+                    <thead class="bg-slate-50/50">
+                        <tr>
+                            <th class="px-8 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest">Customer</th>
+                            <th class="px-8 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest">Email</th>
+                            <th class="px-8 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest">Phone</th>
+                            <th class="px-8 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest">Status</th>
+                            <th class="px-8 py-4 text-xs font-bold text-slate-400 text-right uppercase tracking-widest">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-50 text-sm">
+                        <tr class="hover:bg-slate-50/50 transition-colors">
+                            <td class="px-8 py-5 flex items-center gap-4">
+                                <div class="w-10 h-10 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold text-xs">JD</div>
+                                <span class="font-bold text-slate-800 text-base">John Doe</span>
+                            </td>
+                            <td class="px-8 py-5 text-slate-500 font-medium">john@example.com</td>
+                            <td class="px-8 py-5 text-slate-500 font-medium">+1 555-0100</td>
+                            <td class="px-8 py-5">
+                                <span class="bg-emerald-100 text-emerald-700 text-[10px] font-bold px-3 py-1 rounded-full uppercase">Active</span>
+                            </td>
+                            <td class="px-8 py-5 text-right">
+                                <button class="p-2 text-slate-300 hover:text-slate-600 transition-colors"><i data-lucide="eye" class="w-5 h-5"></i></button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <div id="claimModal" class="hidden-modal fixed inset-0 z-[100] bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-lg rounded-[32px] shadow-2xl relative overflow-hidden transition-all scale-100">
+            <button onclick="closeModal()" class="absolute top-6 right-6 text-slate-300 hover:text-slate-600">
+                <i data-lucide="x" class="w-6 h-6"></i>
+            </button>
+
+            <div class="p-10">
+                <h3 class="text-2xl font-bold mb-8 text-slate-900">Claim Details</h3>
+                
+                <div class="flex justify-between items-start mb-8">
+                    <span id="mID" class="text-xl font-bold font-mono text-slate-900 tracking-tighter"></span>
+                    <span class="bg-amber-100 text-amber-600 text-[11px] font-bold px-4 py-1.5 rounded-full tracking-widest">PENDING</span>
+                </div>
+
+                <div class="grid grid-cols-2 gap-y-8 mb-10">
+                    <div>
+                        <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Policy ID</p>
+                        <p id="mPolicy" class="font-bold text-slate-900"></p>
+                    </div>
+                    <div>
+                        <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Holder</p>
+                        <p id="mHolder" class="font-bold text-slate-900"></p>
+                    </div>
+                    <div>
+                        <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Type</p>
+                        <p id="mType" class="font-bold text-slate-900"></p>
+                    </div>
+                    <div>
+                        <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Amount</p>
+                        <p id="mAmount" class="text-xl font-bold text-slate-900"></p>
+                    </div>
+                </div>
+
+                <div class="mb-10">
+                    <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Description</p>
+                    <p id="mDesc" class="text-sm font-medium text-slate-600 leading-relaxed"></p>
+                </div>
+
+                <div class="flex gap-4">
+                    <button class="flex-1 bg-gradient-to-r from-blue-600 to-blue-500 text-white font-bold py-4 rounded-2xl text-sm shadow-xl shadow-blue-200 hover:opacity-90 flex items-center justify-center gap-2">
+                        <i data-lucide="check-circle-2" class="w-5 h-5"></i> Approve
+                    </button>
+                    <button class="flex-1 bg-gradient-to-r from-red-500 to-red-400 text-white font-bold py-4 rounded-2xl text-sm shadow-xl shadow-red-200 hover:opacity-90 flex items-center justify-center gap-2">
+                        <i data-lucide="x-circle" class="w-5 h-5"></i> Reject
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        if (window.lucide && typeof lucide.createIcons === 'function') {
+            lucide.createIcons();
+        }
+
+        function toggleSidebar(show) {
+            const sidebar = document.getElementById('agentSidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            if (!sidebar || !overlay) return;
+
+            if (typeof show === 'undefined') {
+                // toggle state
+                sidebar.classList.toggle('-translate-x-full');
+                overlay.classList.toggle('hidden');
+                overlay.classList.toggle('active');
+            } else if (show) {
+                // open
+                sidebar.classList.remove('-translate-x-full');
+                overlay.classList.remove('hidden');
+                overlay.classList.add('active');
+            } else {
+                // close
+                sidebar.classList.add('-translate-x-full');
+                overlay.classList.add('hidden');
+                overlay.classList.remove('active');
+            }
+        }
+
+        function openModal(id, pol, holder, type, amt, desc) {
+            document.getElementById('mID').innerText = id;
+            document.getElementById('mPolicy').innerText = pol;
+            document.getElementById('mHolder').innerText = holder;
+            document.getElementById('mType').innerText = type;
+            document.getElementById('mAmount').innerText = amt;
+            document.getElementById('mDesc').innerText = desc;
+            
+            document.getElementById('claimModal').classList.remove('hidden-modal');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            document.getElementById('claimModal').classList.add('hidden-modal');
+            document.body.style.overflow = 'auto';
+        }
+
+        async function processClaim(id, action) {
+            try {
+                const resp = await fetch('/agent/claims/' + id + '/action?action=' + encodeURIComponent(action), { method: 'POST' });
+                if (resp.ok) {
+                    location.reload();
+                } else {
+                    const json = await resp.json().catch(()=>null);
+                    alert(json && json.error ? json.error : 'Failed to process claim');
+                }
+            } catch (e) {
+                alert('Network error: ' + e.message);
+            }
+        }
+
+        async function deleteClaim(id) {
+            if (!confirm('Delete this claim?')) return;
+            try {
+                const resp = await fetch('/agent/claims/' + id, { method: 'DELETE' });
+                if (resp.ok) location.reload();
+                else {
+                    const json = await resp.json().catch(()=>null);
+                    alert(json && json.error ? json.error : 'Failed to delete claim');
+                }
+            } catch (e) {
+                alert('Network error: ' + e.message);
+            }
+        }
+
+function logout() {
+    window.location.href = '/logout';
+  }
+        // Handle backdrop click to close
+        (function() {
+            const _claimModal = document.getElementById('claimModal');
+            if (!_claimModal) return;
+            _claimModal.addEventListener('click', (e) => {
+                if (e.target.id === 'claimModal') closeModal();
+            });
+        })();
+    </script>
+</body>
+</html>

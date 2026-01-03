@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <title>Marketplace – HIMS</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" href="/assets/logo.svg" type="image/svg+xml">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: { primary: "#2563eb" }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+    body { font-family: 'Inter', sans-serif; }
+    .nav-item { display: flex; align-items: center; gap: 12px; padding: 12px; border-radius: 12px; cursor: pointer; transition: background 0.2s; }
+    .nav-item:hover { background: #f1f5f9; }
+    .gradient-header { background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); }
+    .plan-card { transition: all 0.3s ease; }
+    .plan-card:hover { transform: translateY(-8px); box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1); }
+  </style>
+</head>
+
+<body class="bg-slate-50 text-gray-900 flex">
+
+<aside class="fixed top-0 left-0 w-64 h-full bg-white border-r flex flex-col z-40">
+  <div class="p-6 border-b flex items-center gap-3">
+    <div class="w-10 h-10 rounded-xl bg-primary flex items-center justify-center">
+      <i data-lucide="shield" class="text-white"></i>
+    </div>
+    <div>
+      <p class="font-bold text-lg leading-tight">HIMS</p>
+      <p class="text-xs text-gray-500">User Portal</p>
+    </div>
+  </div>
+
+  <nav class="flex-1 p-4 space-y-1">
+    <div onclick="go('/user/dashboard')" class="nav-item text-gray-600"><i data-lucide="layout-dashboard"></i> Dashboard</div>
+    <div onclick="go('/user/policies')" class="nav-item bg-primary/10 text-primary font-semibold"><i data-lucide="file-text"></i> My Policies</div>
+    <div onclick="go('/user/claims')" class="nav-item text-gray-600"><i data-lucide="clipboard-list"></i> Claims</div>
+    <div onclick="go('/user/payments')" class="nav-item text-gray-600"><i data-lucide="credit-card"></i> Payments</div>
+    <div onclick="go('/user/support')" class="nav-item text-gray-600"><i data-lucide="headphones"></i> Support</div>
+    <div onclick="go('/user/profile')" class="nav-item text-gray-600"><i data-lucide="user"></i> Profile</div>
+  </nav>
+
+  <div class="p-4 border-t">
+    <button onclick="logout()" class="w-full flex items-center gap-3 p-3 rounded-xl text-red-600 hover:bg-red-50 transition-colors">
+      <i data-lucide="log-out"></i> Logout
+    </button>
+  </div>
+</aside>
+
+<main class="ml-64 flex-1 p-12">
+  
+  <button onclick="go('/user/policies')" class="flex items-center gap-2 text-slate-500 hover:text-primary mb-8 transition-colors group font-medium">
+    <i data-lucide="arrow-left" class="w-4 h-4 group-hover:-translate-x-1 transition-transform"></i> 
+    Back to My Policies
+  </button>
+
+  <div class="mb-10">
+    <h1 class="text-4xl font-bold text-slate-900 tracking-tight mb-1">Policy Marketplace</h1>
+    <p class="text-slate-500 font-medium">Browse and enroll in insurance plans created by the Admin</p>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+    <div th:each="plan : ${plans}" class="bg-white rounded-[40px] border border-slate-200 shadow-sm overflow-hidden plan-card flex flex-col">
+      <div class="gradient-header p-10 text-white relative">
+        <div class="flex items-center justify-between mb-6">
+          <div class="w-14 h-14 bg-white/20 rounded-2xl flex items-center justify-center shadow-inner">
+            <i data-lucide="shield" class="w-8 h-8"></i>
+          </div>
+          <span class="px-4 py-1.5 rounded-full bg-emerald-500/20 text-[10px] font-bold uppercase tracking-widest backdrop-blur-md">Available</span>
+        </div>
+        <h3 class="text-2xl font-bold leading-tight" th:text="${plan.coverageType}">Plan Name</h3>
+        <p class="text-white/70 text-sm mt-1">Official Marketplace Plan</p>
+      </div>
+
+      <div class="p-10 space-y-6 flex-1">
+        <div class="flex justify-between items-center">
+          <span class="flex items-center gap-2 text-sm text-slate-400 font-medium"><i data-lucide="dollar-sign" class="w-4 h-4"></i> Coverage</span>
+          <span class="font-bold text-slate-900 text-lg" th:text="${'$' + #numbers.formatDecimal(plan.coverageAmount, 0, 'COMMA', 0, 'POINT')}">$0</span>
+        </div>
+
+        <div class="flex justify-between items-center">
+          <span class="flex items-center gap-2 text-sm text-slate-400 font-medium"><i data-lucide="dollar-sign" class="w-4 h-4"></i> Premium</span>
+          <span class="font-bold text-slate-900" th:text="${'$' + plan.premiumAmount + '/month'}">$0</span>
+        </div>
+
+        <form th:action="@{/user/policies/enroll}" method="post">
+    <input type="hidden" name="planId" th:value="${plan.id}" />
+    
+    <button type="submit" 
+            class="w-full mt-8 bg-primary text-white py-5 rounded-[24px] font-bold hover:bg-blue-700 shadow-xl shadow-blue-500/20 transition-all transform hover:-translate-y-1 active:scale-95">
+      Enroll in this Plan
+    </button>
+</form>
+      </div>
+    </div>
+
+    <div th:if="${plans == null or plans.isEmpty()}" class="col-span-full py-24 text-center">
+      <p class="text-slate-500 font-medium">The Admin has not published any marketplace plans yet.</p>
+    </div>
+  </div>
+</main>
+
+<script>
+  lucide.createIcons();
+  function go(url) { window.location.href = url; }
+  function logout() { location.href = '/logout'; }
+</script>
+
+</body>
+</html>

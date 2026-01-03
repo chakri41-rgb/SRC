@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="/assets/logo.svg" type="image/svg+xml">
+    <title>Register | HIMS - Health Insurance Management System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        :root {
+            --primary-gradient: linear-gradient(135deg, #10b981 0%, #06b6d4 100%);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .gradient-primary {
+            background: var(--primary-gradient);
+        }
+
+        .gradient-text {
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Custom Select Styling */
+        .role-option:hover {
+            background-color: #f3f4f6;
+        }
+        
+        .role-dropdown {
+            display: none;
+            position: absolute;
+            width: 100%;
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.75rem;
+            margin-top: 0.25rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            z-index: 50;
+        }
+
+        .show { display: block; }
+    </style>
+</head>
+<body class="bg-gray-50">
+
+    <div class="min-h-screen flex">
+        <div class="hidden lg:flex flex-1 gradient-primary items-center justify-center p-12 relative overflow-hidden">
+            <div class="absolute inset-0 opacity-10">
+                <div class="absolute top-20 right-20 w-64 h-64 rounded-full border-4 border-white/30"></div>
+                <div class="absolute bottom-20 left-20 w-48 h-48 rounded-full border-4 border-white/30"></div>
+                <div class="absolute top-1/3 right-1/4 w-32 h-32 rounded-full bg-white/10"></div>
+            </div>
+            
+            <div class="relative z-10 text-white text-center max-w-lg">
+                <div class="w-24 h-24 rounded-2xl bg-white/20 flex items-center justify-center mx-auto mb-8">
+                    <i data-lucide="shield" class="w-12 h-12"></i>
+                </div>
+                <h2 class="text-3xl font-bold mb-4">Join HIMS Today</h2>
+                <p class="text-xl text-white/80 mb-8">
+                    Create your account and start managing your health insurance with ease. Simple, secure, and always at your fingertips.
+                </p>
+                <div class="flex items-center justify-center gap-8 text-white/80">
+                    <div class="text-center">
+                        <p class="text-2xl font-bold text-white">50K+</p>
+                        <p class="text-sm">Happy Users</p>
+                    </div>
+                    <div class="w-px h-12 bg-white/30"></div>
+                    <div class="text-center">
+                        <p class="text-2xl font-bold text-white">99%</p>
+                        <p class="text-sm">Claims Approved</p>
+                    </div>
+                    <div class="w-px h-12 bg-white/30"></div>
+                    <div class="text-center">
+                        <p class="text-2xl font-bold text-white">24/7</p>
+                        <p class="text-sm">Support</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex-1 flex items-center justify-center p-8 bg-white">
+            <div class="w-full max-w-md animate-fade-in">
+                <a th:href="@{/}" class="flex items-center gap-2 mb-12">
+                    <div class="w-10 h-10 rounded-xl gradient-primary flex items-center justify-center">
+                        <i data-lucide="shield" class="w-6 h-6 text-white"></i>
+                    </div>
+                    <span class="text-xl font-bold gradient-text">HIMS</span>
+                </a>
+<div th:if="${error}" class="p-4 mb-6 rounded-xl bg-red-50 text-red-600 text-sm border border-red-100 flex items-center gap-2 animate-fade-in">
+    <i data-lucide="alert-circle" class="w-4 h-4"></i>
+    <span th:text="${error}"></span>
+</div>
+                <h1 class="text-3xl font-bold mb-2">Create your account</h1>
+                <p class="text-muted-foreground mb-8 text-gray-500">Start managing your health insurance today</p>
+
+                <form id="registrationForm" th:action="@{/register}" method="POST" class="space-y-5">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium text-gray-700">First Name *</label>
+                            <div class="relative">
+                                <i data-lucide="user" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"></i>
+                                <input type="text" name="firstName" id="firstName" placeholder="John" 
+                                    class="w-full pl-12 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                            </div>
+                            <p id="error-firstName" class="text-xs text-red-500 hidden"></p>
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium text-gray-700">Last Name *</label>
+                            <input type="text" name="lastName" id="lastName" placeholder="Doe" 
+                                class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                            <p id="error-lastName" class="text-xs text-red-500 hidden"></p>
+                        </div>
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="text-sm font-medium text-gray-700">Email Address *</label>
+                        <div class="relative">
+                            <i data-lucide="mail" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"></i>
+                            <input type="email" name="email" id="email" placeholder="you@example.com" 
+                                class="w-full pl-12 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                        </div>
+                        <p id="error-email" class="text-xs text-red-500 hidden"></p>
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="text-sm font-medium text-gray-700">Phone Number (Optional)</label>
+                        <div class="relative">
+                            <i data-lucide="phone" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"></i>
+                            <input type="tel" name="phone" id="phone" placeholder="+1 (555) 123-4567" 
+                                class="w-full pl-12 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                        </div>
+                    </div>
+
+                    <div class="space-y-2 relative">
+                        <label class="text-sm font-medium text-gray-700">Select Role *</label>
+                        <div class="relative">
+                            <i data-lucide="users" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 z-10"></i>
+                            <button type="button" id="roleButton" onclick="toggleDropdown()"
+                                class="w-full pl-12 pr-4 py-2 text-left border border-gray-300 rounded-md bg-white flex justify-between items-center focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                                <span id="selectedRoleText" class="text-gray-500">Choose your role</span>
+                                <i data-lucide="chevron-down" class="w-4 h-4 text-gray-400"></i>
+                            </button>
+                            <input type="hidden" name="role" id="roleValue">
+                            <input type="hidden" name="username" id="usernameValue">
+                            
+                            <div id="roleDropdown" class="role-dropdown">
+                                <div class="role-option p-3 cursor-pointer" onclick="selectRole('USER', 'Customer', 'View policies, submit claims, make payments')">
+                                    <p class="font-medium text-sm">Customer</p>
+                                    <p class="text-xs text-gray-500">View policies, submit claims, make payments</p>
+                                </div>
+                                <div class="role-option p-3 cursor-pointer border-t border-gray-100" onclick="selectRole('AGENT', 'Agent', 'Manage policies, review and process claims')">
+                                    <p class="font-medium text-sm">Agent</p>
+                                    <p class="text-xs text-gray-500">Manage policies, review and process claims</p>
+                                </div>
+                            </div>
+                        </div>
+                        <p id="error-role" class="text-xs text-red-500 hidden"></p>
+                        <p class="text-xs text-gray-400">Admin accounts are created internally</p>
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="text-sm font-medium text-gray-700">Password *</label>
+                        <div class="relative">
+                            <i data-lucide="lock" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"></i>
+                            <input type="password" name="password" id="password" placeholder="••••••••" 
+                                class="w-full pl-12 pr-12 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                            <button type="button" onclick="togglePassVisibility('password', this)" class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">
+                                <i data-lucide="eye" class="w-5 h-5"></i>
+                            </button>
+                        </div>
+                        <p id="error-password" class="text-xs text-red-500 hidden"></p>
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="text-sm font-medium text-gray-700">Confirm Password *</label>
+                        <div class="relative">
+                            <i data-lucide="lock" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"></i>
+                            <input type="password" name="confirmPassword" id="confirmPassword" placeholder="••••••••" 
+                                class="w-full pl-12 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                        </div>
+                        <p id="error-confirmPassword" class="text-xs text-red-500 hidden"></p>
+                    </div>
+                    
+                    <button type="submit" class="w-full gradient-primary text-white py-3 rounded-md font-semibold hover:opacity-90 transition-opacity flex items-center justify-center gap-2">
+                        Create Account
+                        <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                    </button>
+                </form>
+
+                <p class="mt-6 text-xs text-gray-500 text-center">
+                    By creating an account, you agree to our 
+                    <a href="#" class="text-emerald-600 hover:underline">Terms of Service</a>
+                    and 
+                    <a href="#" class="text-emerald-600 hover:underline">Privacy Policy</a>
+                </p>
+
+                <div class="mt-8 text-center">
+                    <p class="text-gray-500">
+                        Already have an account? 
+                        <a th:href="@{/login}" class="text-emerald-600 font-semibold hover:underline">Sign in</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize Icons
+        lucide.createIcons();
+
+        // Form Logic
+        const form = document.getElementById('registrationForm');
+        const roleDropdown = document.getElementById('roleDropdown');
+        const roleButton = document.getElementById('roleButton');
+        const roleValue = document.getElementById('roleValue');
+        const selectedRoleText = document.getElementById('selectedRoleText');
+
+        function toggleDropdown() {
+            roleDropdown.classList.toggle('show');
+        }
+
+        function selectRole(val, label, sub) {
+            roleValue.value = val;
+            selectedRoleText.innerText = label;
+            selectedRoleText.classList.remove('text-gray-500');
+            selectedRoleText.classList.add('text-black');
+            roleDropdown.classList.remove('show');
+            document.getElementById('error-role').classList.add('hidden');
+        }
+
+        function togglePassVisibility(id, btn) {
+            const input = document.getElementById(id);
+            const icon = btn.querySelector('i');
+            if (input.type === 'password') {
+                input.type = 'text';
+                btn.innerHTML = '<i data-lucide="eye-off" class="w-5 h-5"></i>';
+            } else {
+                input.type = 'password';
+                btn.innerHTML = '<i data-lucide="eye" class="w-5 h-5"></i>';
+            }
+            lucide.createIcons();
+        }
+
+        // Close dropdown when clicking outside
+        window.onclick = function(event) {
+            if (!event.target.closest('#roleButton')) {
+                roleDropdown.classList.remove('show');
+            }
+        }
+
+        // Validation
+        // form.onsubmit = function(e) {
+        //     e.preventDefault();
+        //     let isValid = true;
+        //     const fields = ['firstName', 'lastName', 'email', 'password', 'confirmPassword'];
+            
+        //     // Basic reset
+        //     fields.forEach(f => document.getElementById(`error-${f}`).classList.add('hidden'));
+        //     document.getElementById('error-role').classList.add('hidden');
+
+        //     const data = {
+        //         firstName: document.getElementById('firstName').value,
+        //         lastName: document.getElementById('lastName').value,
+        //         email: document.getElementById('email').value,
+        //         role: roleValue.value,
+        //         password: document.getElementById('password').value,
+        //         confirmPassword: document.getElementById('confirmPassword').value
+        //     };
+
+        //     if(!data.firstName.trim()) { 
+        //         showError('firstName', 'First name is required'); isValid = false; 
+        //     }
+        //     if(!data.lastName.trim()) { 
+        //         showError('lastName', 'Last name is required'); isValid = false; 
+        //     }
+        //     if(!data.email.trim() || !data.email.includes('@')) { 
+        //         showError('email', 'Please enter a valid email address'); isValid = false; 
+        //     }
+        //     if(!data.role) { 
+        //         showError('role', 'Please select a role'); isValid = false; 
+        //     }
+        //     if(data.password.length < 8) { 
+        //         showError('password', 'Password must be at least 8 characters'); isValid = false; 
+        //     }
+        //     if(data.password !== data.confirmPassword) { 
+        //         showError('confirmPassword', 'Passwords do not match'); isValid = false; 
+        //     }
+
+        //     if(isValid) {
+        //         alert(`Account created successfully as ${data.role}! Redirecting...`);
+        //         // window.location.href = data.role === 'agent' ? '/agent' : '/dashboard';
+        //     }
+        // };
+form.onsubmit = function(e) {
+    let isValid = true;
+    const fields = ['firstName', 'lastName', 'email', 'password', 'confirmPassword'];
+    
+    // 1. Reset all error messages
+    fields.forEach(f => {
+        const err = document.getElementById(`error-${f}`);
+        if(err) err.classList.add('hidden');
+    });
+    document.getElementById('error-role').classList.add('hidden');
+
+    // 2. Collect current values
+    const data = {
+        firstName: document.getElementById('firstName').value.trim(),
+        lastName: document.getElementById('lastName').value.trim(),
+        email: document.getElementById('email').value.trim(),
+        role: roleValue.value,
+        password: document.getElementById('password').value,
+        confirmPassword: document.getElementById('confirmPassword').value
+    };
+
+    // 3. Run Validation Checks
+    if(!data.firstName) { showError('firstName', 'First name is required'); isValid = false; }
+    if(!data.lastName) { showError('lastName', 'Last name is required'); isValid = false; }
+    if(!data.email || !data.email.includes('@')) { showError('email', 'Enter a valid email'); isValid = false; }
+    if(!data.role) { showError('role', 'Please select a role'); isValid = false; }
+    if(data.password.length < 8) { showError('password', 'Min 8 characters'); isValid = false; }
+    if(data.password !== data.confirmPassword) { showError('confirmPassword', 'Passwords do not match'); isValid = false; }
+
+    // 4. Prepare server payload
+    // set username hidden field to firstName + lastName
+    document.getElementById('usernameValue').value = (data.firstName + ' ' + data.lastName).trim();
+
+    // 5. Final Decision
+    if (!isValid) {
+        e.preventDefault(); // Stop form only if there are local errors
+        return false;
+    }
+    
+    // If isValid is true, the form will now submit to your Java @PostMapping
+    return true; 
+};
+        function showError(field, msg) {
+            const errEl = document.getElementById(`error-${field}`);
+            errEl.innerText = msg;
+            errEl.classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>

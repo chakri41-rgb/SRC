@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="/assets/logo.svg" type="image/svg+xml">
+    <title>Login | HIMS - Health Insurance Management System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        body { font-family: 'Inter', sans-serif; }
+
+        .gradient-primary {
+            background: linear-gradient(135deg, #10b981 0%, #06b6d4 100%);
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #10b981 0%, #06b6d4 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Input Focus Styling */
+        .hims-input:focus {
+            outline: none;
+            ring: 2px;
+            ring-color: #10b981;
+            border-color: #10b981;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+
+    <div class="min-h-screen flex">
+        
+        <div class="flex-1 flex items-center justify-center p-8 bg-white">
+            <div class="w-full max-w-md animate-fade-in">
+                
+                <a th:href="@{/}" class="flex items-center gap-2 mb-12">
+                    <div class="w-10 h-10 rounded-xl gradient-primary flex items-center justify-center shadow-lg shadow-emerald-100">
+                        <i data-lucide="shield" class="w-6 h-6 text-white"></i>
+                    </div>
+                    <span class="text-xl font-bold gradient-text">HIMS</span>
+                </a>
+
+                <h1 class="text-3xl font-bold mb-2 text-slate-900">Welcome back</h1>
+                <p class="text-slate-500 mb-8">Sign in to access your insurance dashboard</p>
+
+                <div th:if="${error}" class="p-4 mb-6 rounded-xl bg-red-50 text-red-600 text-sm border border-red-100 animate-fade-in">
+    <div class="flex items-center gap-2">
+        <i data-lucide="alert-circle" class="w-4 h-4"></i>
+        <span th:text="${error}"></span>
+    </div>
+</div>
+
+<div th:if="${param.registered}" class="p-4 mb-6 rounded-xl bg-emerald-50 text-emerald-600 text-sm border border-emerald-100 animate-fade-in">
+    <div class="flex items-center gap-2">
+        <i data-lucide="check-circle" class="w-4 h-4"></i>
+    <span>Registration successful! Please sign in.</span>
+    </div>
+</div>
+
+<div id="jsErrorAlert" class="hidden p-4 mb-6 rounded-xl bg-red-50 text-red-600 text-sm border border-red-100 animate-fade-in">
+    <div class="flex items-center gap-2">
+        <i data-lucide="alert-circle" class="w-4 h-4"></i>
+        <span>Please fill in all fields</span>
+    </div>
+</div>
+
+                <form id="loginForm" th:action="@{/login}" method="POST" class="space-y-6">
+                    
+                    <div class="space-y-2">
+                        <label class="text-sm font-medium text-slate-700">Email Address</label>
+                        <div class="relative">
+                            <i data-lucide="mail" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400"></i>
+                            <input 
+                                type="email" 
+                                id="email"
+                                name="email"
+                                placeholder="you@example.com" 
+                                class="w-full pl-12 pr-4 py-2.5 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
+                            >
+                        </div>
+                    </div>
+
+                    <div class="space-y-2">
+                        <div class="flex items-center justify-between">
+                            <label class="text-sm font-medium text-slate-700">Password</label>
+                            <a href="#" class="text-sm text-emerald-600 hover:underline font-medium">Forgot password?</a>
+                        </div>
+                        <div class="relative">
+                            <i data-lucide="lock" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400"></i>
+                            <input 
+                                type="password" 
+                                id="password"
+                                name="password"
+                                placeholder="••••••••" 
+                                class="w-full pl-12 pr-12 py-2.5 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
+                            >
+                            <button 
+                                type="button" 
+                                onclick="togglePassword()"
+                                class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                            >
+                                <span id="eyeIcon"><i data-lucide="eye" class="w-5 h-5"></i></span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="w-full gradient-primary text-white py-3 rounded-xl font-semibold shadow-lg shadow-emerald-100 hover:opacity-90 transition-all flex items-center justify-center gap-2">
+                        Sign In
+                        <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                    </button>
+                </form>
+
+                <div class="mt-8 text-center">
+                    <p class="text-slate-500">
+                        Don't have an account? 
+                        <a th:href="@{/register}" class="text-emerald-600 font-semibold hover:underline">
+                            Create account
+                        </a>
+                    </p>
+                </div>
+
+                <!-- <div class="mt-8 p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-3">
+                    <p class="text-sm font-bold text-slate-700 uppercase tracking-wider text-[10px]">Demo Accounts:</p>
+                    <div class="text-xs text-slate-500 space-y-2">
+                        <div class="flex justify-between items-center bg-white p-2 rounded-lg border border-slate-100">
+                            <code class="text-emerald-600 font-semibold">admin@hims.com</code>
+                            <span class="text-[10px] bg-slate-100 px-1.5 py-0.5 rounded text-slate-500">Admin</span>
+                        </div>
+                        <div class="flex justify-between items-center bg-white p-2 rounded-lg border border-slate-100">
+                            <code class="text-emerald-600 font-semibold">agent@hims.com</code>
+                            <span class="text-[10px] bg-slate-100 px-1.5 py-0.5 rounded text-slate-500">Agent</span>
+                        </div>
+                        <div class="flex justify-between items-center bg-white p-2 rounded-lg border border-slate-100">
+                            <code class="text-emerald-600 font-semibold">user@hims.com</code>
+                            <span class="text-[10px] bg-slate-100 px-1.5 py-0.5 rounded text-slate-500">Customer</span>
+                        </div>
+                    </div>
+                </div> -->
+            </div>
+        </div>
+
+        <div class="hidden lg:flex flex-1 gradient-primary items-center justify-center p-12 relative overflow-hidden">
+            <div class="absolute inset-0 opacity-10">
+                <div class="absolute top-20 left-20 w-64 h-64 rounded-full border-4 border-white/30"></div>
+                <div class="absolute bottom-20 right-20 w-48 h-48 rounded-full border-4 border-white/30"></div>
+                <div class="absolute top-1/2 left-1/3 w-32 h-32 rounded-full bg-white/10"></div>
+            </div>
+            
+            <div class="relative z-10 text-white text-center max-w-lg">
+                <div class="w-24 h-24 rounded-3xl bg-white/20 flex items-center justify-center mx-auto mb-8 backdrop-blur-md border border-white/30 shadow-2xl">
+                    <i data-lucide="shield" class="w-12 h-12"></i>
+                </div>
+                <h2 class="text-4xl font-bold mb-4">Your Health, Our Priority</h2>
+                <p class="text-xl text-white/80 leading-relaxed font-light">
+                    Access your policies, manage claims, and stay protected with our comprehensive insurance management platform.
+                </p>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Initialize Icons
+        lucide.createIcons();
+
+        // Toggle Password Visibility
+        let showPassword = false;
+        function togglePassword() {
+            const passwordInput = document.getElementById('password');
+            const eyeContainer = document.getElementById('eyeIcon');
+            showPassword = !showPassword;
+            
+            if (showPassword) {
+                passwordInput.type = "text";
+                eyeContainer.innerHTML = '<i data-lucide="eye-off" class="w-5 h-5"></i>';
+            } else {
+                passwordInput.type = "password";
+                eyeContainer.innerHTML = '<i data-lucide="eye" class="w-5 h-5"></i>';
+            }
+            lucide.createIcons(); // Refresh icons
+        }
+
+        // Form Submission Logic
+        // document.getElementById('loginForm').addEventListener('submit', function(e) {
+        //     e.preventDefault();
+        //     const email = document.getElementById('email').value;
+        //     const password = document.getElementById('password').value;
+        //     const errorAlert = document.getElementById('errorAlert');
+
+        //     if (!email || !password) {
+        //         errorAlert.classList.remove('hidden');
+        //         return;
+        //     }
+
+        //     errorAlert.classList.add('hidden');
+
+        //     // Redirect Logic based on React Component
+        //     if (email === "admin@hims.com") {
+        //         alert("Redirecting to Admin Dashboard...");
+        //         window.location.href = "admin/dashboard.html";
+        //     } else if (email === "agent@hims.com") {
+        //         alert("Redirecting to Agent Dashboard...");
+        //         window.location.href = "agent/dashboard.html";
+        //     } else {
+        //         alert("Redirecting to Customer Dashboard...");
+        //         window.location.href = "user/dashboard.html";
+        //     }
+        // });
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    const jsErrorAlert = document.getElementById('jsErrorAlert');
+
+    // Only prevent submission if fields are empty
+    if (!email || !password) {
+        e.preventDefault(); 
+        jsErrorAlert.classList.remove('hidden');
+        return;
+    }
+
+    // REMOVE all the alert() and window.location.href logic.
+    // Let the form submit naturally to the @PostMapping("/login") in your Controller.
+});
+    </script>
+</body>
+</html>

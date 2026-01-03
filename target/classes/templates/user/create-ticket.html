@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <title>Create Support Ticket – HIMS</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="/assets/logo.svg" type="image/svg+xml">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = {
+      theme: { extend: { colors: { primary: "#2563eb" } } }
+    }
+  </script>
+  <style>
+    .nav-item { display: flex; align-items: center; gap: 12px; padding: 12px; border-radius: 12px; cursor: pointer; transition: background 0.2s; }
+    .nav-item:hover { background: #f1f5f9; }
+  </style>
+</head>
+<body class="bg-slate-50 text-gray-900">
+
+<aside class="fixed top-0 left-0 w-64 h-full bg-white border-r flex flex-col">
+  <div class="p-6 border-b flex items-center gap-3">
+    <div class="w-10 h-10 rounded-xl bg-primary flex items-center justify-center">
+      <i data-lucide="shield" class="text-white"></i>
+    </div>
+    <div><p class="font-bold text-lg">HIMS</p><p class="text-sm text-gray-500">User Portal</p></div>
+  </div>
+  <nav class="flex-1 p-4 space-y-1">
+    <div onclick="go('/user/dashboard')" class="nav-item"><i data-lucide="layout-dashboard"></i> Dashboard</div>
+    <div onclick="go('/user/policies')" class="nav-item"><i data-lucide="file-text"></i> My Policies</div>
+    <div onclick="go('/user/claims')" class="nav-item"><i data-lucide="clipboard-list"></i> Claims</div>
+    <div onclick="go('/user/payments')" class="nav-item"><i data-lucide="credit-card"></i> Payments</div>
+    <div onclick="go('/user/support')" class="nav-item bg-primary/10 text-primary"><i data-lucide="headphones"></i> Support</div>
+    <div onclick="go('/user/profile')" class="nav-item"><i data-lucide="user"></i> Profile</div>
+  </nav>
+</aside>
+
+<main class="ml-64 p-8">
+  <a th:href="@{/user/support}" class="inline-flex items-center gap-2 text-gray-500 hover:text-gray-900 transition mb-6">
+    <i data-lucide="arrow-left" class="w-4 h-4"></i> Back to Support
+  </a>
+
+  <div class="max-w-3xl">
+    <h1 class="text-3xl font-bold mb-1">Create Support Ticket</h1>
+    <p class="text-gray-500 mb-8">Describe your issue and we'll help you resolve it</p>
+
+    <!-- <form th:action="@{/user/support/create}" method="POST" class="bg-white border rounded-2xl p-8 shadow-sm">
+      <div class="mb-8">
+        <label class="block text-sm font-medium mb-2">Description</label>
+        <textarea name="issue_description" rows="6" required
+          placeholder="Please provide as much detail as possible about your issue..."
+          class="w-full px-4 py-3 rounded-xl border resize-none focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"></textarea>
+      </div>
+
+      <div class="flex gap-3 p-4 rounded-xl bg-blue-50 border border-blue-200 mb-8">
+        <i data-lucide="alert-circle" class="w-5 h-5 text-primary mt-0.5"></i>
+        <div>
+          <p class="text-sm font-medium">Response Time</p>
+          <p class="text-sm text-gray-600">Our support team typically responds within 24 hours.</p>
+        </div>
+      </div>
+
+      <div class="flex gap-4">
+<a th:href="@{/user/support}" class="flex-1 h-12 rounded-xl border flex items-center justify-center font-medium hover:bg-slate-100 transition">Cancel</a>        <button type="submit" class="flex-1 h-12 rounded-xl bg-primary text-white font-semibold shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all">
+          Submit Ticket
+        </button>
+      </div>
+    </form> -->
+
+   <form th:action="@{/user/support/create}" method="POST" class="bg-white border rounded-2xl p-8 shadow-sm space-y-6">
+  <div>
+    <label class="block text-sm font-medium mb-2">Subject</label>
+    <input type="text" name="subject" placeholder="Brief description of your issue"
+           class="w-full h-12 px-4 rounded-xl border focus:ring-2 focus:ring-primary/20 outline-none">
+  </div>
+
+  <div class="grid grid-cols-2 gap-4">
+    <div>
+      <label class="block text-sm font-medium mb-2">Category</label>
+      <select name="category" required class="w-full h-12 px-4 rounded-xl border outline-none">
+        <option value="Claims">Claims</option>
+        <option value="Policies">Policies</option>
+        <option value="Payments">Payments</option>
+        <option value="Account">Account</option>
+        <option value="Technical Issue">Technical Issue</option>
+        <option value="Other">Other</option>
+      </select>
+    </div>
+    <div>
+      <label class="block text-sm font-medium mb-2">Priority</label>
+      <select name="priority" required class="w-full h-12 px-4 rounded-xl border outline-none">
+        <option value="Low">Low</option>
+        <option value="Medium">Medium</option>
+        <option value="High">High</option>
+      </select>
+    </div>
+  </div>
+
+  <div>
+    <label class="block text-sm font-medium mb-2">Description</label>
+    <textarea name="issue_description" rows="6" required 
+              placeholder="Please provide detail..."
+              class="w-full px-4 py-3 rounded-xl border outline-none"></textarea>
+  </div>
+
+  <div class="flex gap-4">
+    <a th:href="@{/user/support}" class="flex-1 h-12 rounded-xl border flex items-center justify-center">Cancel</a>
+    <button type="submit" class="flex-1 h-12 rounded-xl bg-primary text-white font-semibold shadow-lg">Submit Ticket</button>
+  </div>
+</form>
+  </div>
+</main>
+
+<script>
+  function go(path) { window.location.href = path; }
+  lucide.createIcons();
+</script>
+</body>
+</html>

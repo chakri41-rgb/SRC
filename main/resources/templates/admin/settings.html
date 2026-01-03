@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Settings – Admin</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="/assets/logo.svg" type="image/svg+xml">
+
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            sidebar: "#0f172a",
+            bg: "#f8fafc",
+            card: "#ffffff",
+            border: "#e5e7eb",
+            muted: "#64748b",
+            primary: "#2563eb"
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    .gradient-primary {
+      background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    }
+
+    /* ---------- Sidebar ---------- */
+    .nav-btn {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px;
+      border-radius: 12px;
+      transition: background-color 0.15s ease;
+    }
+    .nav-btn:hover {
+      background: rgba(255,255,255,0.1);
+    }
+
+    /* ---------- Toggle ---------- */
+    .toggle {
+      width: 46px;
+      height: 24px;
+      border-radius: 999px;
+      position: relative;
+      cursor: pointer;
+      transition: background-color 0.25s ease;
+    }
+    .toggle span {
+      width: 18px;
+      height: 18px;
+      background: #fff;
+      border-radius: 999px;
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      transition: transform 0.25s ease;
+    }
+    .toggle.on {
+      background: #2563eb;
+    }
+    .toggle.on span {
+      transform: translateX(22px);
+    }
+    .toggle.off {
+      background: #e5e7eb;
+    }
+
+    /* ---------- Cards ---------- */
+    .card-hover {
+      transition: box-shadow 0.25s ease, transform 0.25s ease;
+    }
+    .card-hover:hover {
+      box-shadow: 0 10px 28px rgba(0,0,0,0.08);
+      transform: translateY(-1px);
+    }
+  </style>
+</head>
+
+<body class="bg-bg text-slate-900">
+
+<!-- ================= SIDEBAR ================= -->
+<aside class="fixed inset-y-0 left-0 w-64 bg-sidebar text-white flex flex-col z-40">
+
+  <!-- Logo -->
+  <div class="p-6 flex items-center gap-3">
+    <div class="w-10 h-10 gradient-primary rounded-xl flex items-center justify-center">
+      <i data-lucide="shield"></i>
+    </div>
+    <div>
+      <h1 class="font-bold leading-tight">HIMS</h1>
+      <p class="text-xs text-white/60">Admin Portal</p>
+    </div>
+  </div>
+
+  <!-- Nav -->
+  <nav class="px-4 space-y-1 flex-1">
+    <button onclick="go('/admin/dashboard')" class="nav-btn">
+      <i data-lucide="layout-dashboard"></i> Dashboard
+    </button>
+    <button onclick="go('/admin/users')" class="nav-btn">
+      <i data-lucide="users"></i> Users
+    </button>
+    <button onclick="go('/admin/policies')" class="nav-btn">
+      <i data-lucide="file-text"></i> Policies
+    </button>
+    <button onclick="go('/admin/claims')" class="nav-btn">
+      <i data-lucide="clipboard-list"></i> Claims
+    </button>
+    <button onclick="go('/admin/support')" class="nav-btn">
+      <i data-lucide="headphones"></i> Support
+    </button>
+    <button
+      onclick="go('/admin/analytics')"
+      class="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-white/10 transition"
+    >
+      <i data-lucide="bar-chart-3"></i>
+      <span>Analytics</span>
+    </button>
+    <!-- ACTIVE -->
+    <button class="nav-btn bg-white/10 cursor-default">
+      <i data-lucide="settings"></i> Settings
+    </button>
+  </nav>
+
+  <!-- <button class="m-4 flex items-center gap-2 text-red-400 hover:text-red-500">
+    <i data-lucide="log-out"></i> Logout
+  </button> -->
+
+  <div class="p-4 border-t">
+    <button onclick="logout()"
+      class="w-full flex items-center gap-3 p-3 rounded-xl text-red-600 hover:bg-red-50 font-semibold">
+      <i data-lucide="log-out"></i>Logout
+    </button>
+  </div>
+</aside>
+
+<!-- ================= MAIN ================= -->
+<main class="ml-64 p-8">
+
+  <!-- Header -->
+  <div class="flex justify-between items-start mb-10">
+    <div>
+      <h1 class="text-3xl font-bold">Settings</h1>
+      <p class="text-muted mt-1">
+        Manage system preferences and configurations
+      </p>
+    </div>
+
+    <button
+      onclick="resetSettings()"
+      class="px-5 py-2.5 border rounded-xl flex items-center gap-2 hover:bg-slate-50"
+    >
+      <i data-lucide="refresh-cw"></i>
+      Reset to Defaults
+    </button>
+  </div>
+
+  <!-- ================= GRID ================= -->
+  <div class="grid lg:grid-cols-2 gap-6">
+
+    <!-- Notifications -->
+    <div class="bg-card border rounded-2xl p-6 card-hover">
+      <div class="flex gap-4 mb-6">
+        <div class="w-12 h-12 gradient-primary rounded-xl flex items-center justify-center text-white">
+          <i data-lucide="bell"></i>
+        </div>
+        <div>
+          <h3 class="font-semibold">Notifications</h3>
+          <p class="text-sm text-muted">
+            Configure email and push notification preferences
+          </p>
+        </div>
+      </div>
+
+      <div class="space-y-5">
+        <div class="flex justify-between items-center border-b pb-4">
+          <span>Email notifications for new claims</span>
+          <div class="toggle on" onclick="toggle(this)"><span></span></div>
+        </div>
+        <div class="flex justify-between items-center border-b pb-4">
+          <span>SMS alerts for urgent tickets</span>
+          <div class="toggle off" onclick="toggle(this)"><span></span></div>
+        </div>
+        <div class="flex justify-between items-center">
+          <span>Daily summary reports</span>
+          <div class="toggle on" onclick="toggle(this)"><span></span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Security -->
+    <div class="bg-card border rounded-2xl p-6 card-hover">
+      <div class="flex gap-4 mb-6">
+        <div class="w-12 h-12 gradient-primary rounded-xl flex items-center justify-center text-white">
+          <i data-lucide="shield"></i>
+        </div>
+        <div>
+          <h3 class="font-semibold">Security</h3>
+          <p class="text-sm text-muted">
+            Manage security and authentication settings
+          </p>
+        </div>
+      </div>
+
+      <div class="space-y-5">
+        <div class="flex justify-between items-center border-b pb-4">
+          <span>Two-factor authentication</span>
+          <div class="toggle on" onclick="toggle(this)"><span></span></div>
+        </div>
+        <div class="flex justify-between items-center border-b pb-4">
+          <span>Session timeout (30 mins)</span>
+          <div class="toggle on" onclick="toggle(this)"><span></span></div>
+        </div>
+        <div class="flex justify-between items-center">
+          <span>IP whitelist</span>
+          <div class="toggle off" onclick="toggle(this)"><span></span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Regional -->
+    <div class="bg-card border rounded-2xl p-6 card-hover">
+      <div class="flex gap-4 mb-6">
+        <div class="w-12 h-12 gradient-primary rounded-xl flex items-center justify-center text-white">
+          <i data-lucide="globe"></i>
+        </div>
+        <div>
+          <h3 class="font-semibold">Regional</h3>
+          <p class="text-sm text-muted">
+            Configure timezone and language preferences
+          </p>
+        </div>
+      </div>
+
+      <div class="space-y-5">
+        <div class="flex justify-between items-center border-b pb-4">
+          <span>Timezone: EST (UTC-5)</span>
+          <div class="toggle on" onclick="toggle(this)"><span></span></div>
+        </div>
+        <div class="flex justify-between items-center border-b pb-4">
+          <span>Language: English (US)</span>
+          <div class="toggle on" onclick="toggle(this)"><span></span></div>
+        </div>
+        <div class="flex justify-between items-center">
+          <span>Currency: USD ($)</span>
+          <div class="toggle on" onclick="toggle(this)"><span></span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="bg-card border rounded-2xl p-6 card-hover">
+      <div class="flex gap-4 mb-6">
+        <div class="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center text-amber-600">
+          <i data-lucide="database"></i>
+        </div>
+        <div>
+          <h3 class="font-semibold">Quick Actions</h3>
+          <p class="text-sm text-muted">
+            System maintenance and data management
+          </p>
+        </div>
+      </div>
+
+      <div class="space-y-3">
+        <button class="w-full border rounded-xl p-3 flex gap-3 hover:bg-slate-50">
+          <i data-lucide="database"></i> Export All Data
+        </button>
+        <button class="w-full border rounded-xl p-3 flex gap-3 hover:bg-slate-50">
+          <i data-lucide="mail"></i> Test Email Configuration
+        </button>
+        <button class="w-full border rounded-xl p-3 flex gap-3 hover:bg-slate-50">
+          <i data-lucide="palette"></i> Customize Branding
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Save -->
+  <div class="flex justify-end mt-10">
+    <button
+      onclick="saveSettings()"
+      class="px-6 py-3 bg-blue-600 text-white rounded-2xl shadow-lg hover:bg-blue-700 flex items-center gap-2"
+    >
+      <i data-lucide="save"></i>
+      Save All Changes
+    </button>
+  </div>
+
+</main>
+
+<!-- ================= SCRIPTS ================= -->
+<script>
+  lucide.createIcons();
+
+  function toggle(el) {
+    el.classList.toggle("on");
+    el.classList.toggle("off");
+  }
+function logout(){ location.href='/logout' }
+  function saveSettings() {
+    alert("Settings saved successfully");
+  }
+
+  function resetSettings() {
+    alert("Settings reset to defaults");
+  }
+
+  function go(url) {
+    window.location.href = url;
+  }
+</script>
+
+</body>
+</html>

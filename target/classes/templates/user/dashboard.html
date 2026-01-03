@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>User Dashboard – HIMS</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="/assets/logo.svg" type="image/svg+xml">
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: "#2563eb"
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Hover animation same feel as React */
+    .card-hover {
+      transition: all 0.25s ease;
+    }
+    .card-hover:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+    }
+  </style>
+</head>
+
+<body class="bg-slate-50 text-gray-900">
+
+<!-- SIDEBAR -->
+<aside class="fixed top-0 left-0 w-64 h-full bg-white border-r flex flex-col">
+
+  <!-- LOGO -->
+  <div class="p-6 border-b flex items-center gap-3">
+    <div class="w-10 h-10 rounded-xl bg-primary flex items-center justify-center">
+      <i data-lucide="shield" class="text-white"></i>
+    </div>
+    <div>
+      <p class="font-bold text-lg">HIMS</p>
+      <p class="text-sm text-gray-500">User Portal</p>
+    </div>
+  </div>
+
+  <!-- NAV -->
+  <nav class="flex-1 p-4 space-y-1">
+    <div onclick="go('/user/dashboard')" class="nav-item bg-primary/10 text-primary">
+      <i data-lucide="layout-dashboard"></i> Dashboard
+    </div>
+    <div onclick="go('/user/policies')" class="nav-item">
+      <i data-lucide="file-text"></i> My Policies
+    </div>
+    <div onclick="go('/user/claims')" class="nav-item">
+      <i data-lucide="clipboard-list"></i> Claims
+    </div>
+    <div onclick="go('/user/payments')" class="nav-item">
+      <i data-lucide="credit-card"></i> Payments
+    </div>
+    <div onclick="go('/user/support')" class="nav-item">
+      <i data-lucide="headphones"></i> Support
+    </div>
+    <div onclick="go('/user/profile')" class="nav-item">
+      <i data-lucide="user"></i> Profile
+    </div>
+  </nav>
+
+  <!-- LOGOUT -->
+  <div class="p-4 border-t">
+    <button onclick="logout()" class="w-full flex items-center gap-3 p-3 rounded-xl text-red-600 hover:bg-red-50">
+      <i data-lucide="log-out"></i> Logout
+    </button>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="ml-64 p-8">
+
+  <!-- HEADER -->
+  <h1 class="text-3xl font-bold mb-1">Welcome back, <span th:text="${userName}">John</span>!</h1>
+  <p class="text-gray-500 mb-8">Here's an overview of your insurance portfolio</p>
+
+  <!-- KPI CARDS -->
+  <section class="grid grid-cols-4 gap-6 mb-10">
+
+    <div onclick="go('/user/policies')" class="card-hover cursor-pointer bg-white p-6 rounded-2xl border flex justify-between">
+      <div>
+        <p class="text-sm text-gray-500">Active Policies</p>
+        <p class="text-2xl font-bold" th:text="${policies != null ? policies.size() : 0}">0</p>
+        <p class="text-sm text-green-600">+1 this month</p>
+      </div>
+      <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
+        <i data-lucide="file-text" class="text-primary"></i>
+      </div>
+    </div>
+
+    <div onclick="go('/user/claims')" class="card-hover cursor-pointer bg-white p-6 rounded-2xl border flex justify-between">
+      <div>
+        <p class="text-sm text-gray-500">Claims Submitted</p>
+        <p class="text-2xl font-bold" th:text="${claimsCount}">0</p>
+        <p class="text-sm text-gray-500" th:text="${pendingClaimsCount} + ' pending'">0 pending</p>
+      </div>
+      <div class="w-12 h-12 bg-sky-100 rounded-xl flex items-center justify-center">
+        <i data-lucide="clipboard-list" class="text-primary"></i>
+      </div>
+    </div>
+
+    <div onclick="go('/user/payments')" class="card-hover cursor-pointer bg-white p-6 rounded-2xl border flex justify-between">
+      <div>
+        <p class="text-sm text-gray-500">Pending Payments</p>
+        <p class="text-2xl font-bold" th:text="${paymentsDue}">0</p>
+        <p class="text-sm text-red-500">Payments due</p>
+      </div>
+      <div class="w-12 h-12 bg-violet-100 rounded-xl flex items-center justify-center">
+        <i data-lucide="credit-card" class="text-primary"></i>
+      </div>
+    </div>
+
+    <div onclick="go('/user/support')" class="card-hover cursor-pointer bg-white p-6 rounded-2xl border flex justify-between">
+      <div>
+        <p class="text-sm text-gray-500">Support Tickets</p>
+        <p class="text-2xl font-bold" th:text="${ticketsOpen}">0</p>
+        <p class="text-sm text-gray-500" th:text="${ticketsOpen} + ' open'">0 open</p>
+      </div>
+      <div class="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center">
+        <i data-lucide="headphones" class="text-primary"></i>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- QUICK ACTIONS -->
+  <h2 class="text-xl font-semibold mb-4">Quick Actions</h2>
+  <section class="grid grid-cols-4 gap-6 mb-10">
+
+    <div onclick="go('/user/policies')" class="card-hover cursor-pointer bg-white p-6 rounded-2xl border flex items-center gap-4">
+      <div class="w-12 h-12 bg-blue-500 rounded-xl flex items-center justify-center">
+        <i data-lucide="file-text" class="text-white"></i>
+      </div>
+      <p class="font-semibold">View Policies</p>
+    </div>
+
+    <div onclick="go('/user/submit-claim')" class="card-hover cursor-pointer bg-white p-6 rounded-2xl border flex items-center gap-4">
+      <div class="w-12 h-12 bg-emerald-500 rounded-xl flex items-center justify-center">
+        <i data-lucide="clipboard-list" class="text-white"></i>
+      </div>
+      <p class="font-semibold">Submit Claim</p>
+    </div>
+
+    <div onclick="go('/user/payments')" class="card-hover cursor-pointer bg-white p-6 rounded-2xl border flex items-center gap-4">
+      <div class="w-12 h-12 bg-purple-500 rounded-xl flex items-center justify-center">
+        <i data-lucide="credit-card" class="text-white"></i>
+      </div>
+      <p class="font-semibold">Make Payment</p>
+    </div>
+
+    <div onclick="go('/user/support')" class="card-hover cursor-pointer bg-white p-6 rounded-2xl border flex items-center gap-4">
+      <div class="w-12 h-12 bg-orange-500 rounded-xl flex items-center justify-center">
+        <i data-lucide="headphones" class="text-white"></i>
+      </div>
+      <p class="font-semibold">Get Support</p>
+    </div>
+
+  </section>
+
+  <!-- RECENT ACTIVITY -->
+  <section class="bg-white border rounded-2xl p-6">
+    <div class="flex justify-between items-center mb-6">
+      <h2 class="text-xl font-semibold">Recent Activity</h2>
+      <button onclick="go('/user/claims')" class="flex items-center gap-2 text-sm font-medium hover:text-primary">
+        View All <i data-lucide="arrow-right"></i>
+      </button>
+    </div>
+
+    <div class="space-y-4">
+      <div class="flex justify-between items-center p-4 rounded-xl bg-slate-50 hover:bg-slate-100 transition">
+        <div class="flex items-center gap-4">
+          <div class="w-10 h-10 bg-green-100 rounded-xl flex items-center justify-center">
+            <i data-lucide="check-circle" class="text-green-600"></i>
+          </div>
+          <div>
+            <p class="font-medium">Claim #CLM-2024-001</p>
+            <p class="text-sm text-gray-500">Medical checkup reimbursement</p>
+          </div>
+        </div>
+        <div class="text-right">
+          <span class="text-xs bg-green-100 text-green-700 px-3 py-1 rounded-full">Approved</span>
+          <p class="text-xs text-gray-400 mt-1">2 hours ago</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<script>
+  function go(path) {
+    window.location.href = path;
+  }
+
+  function logout() {
+    window.location.href = '/logout';
+  }
+
+  lucide.createIcons();
+</script>
+
+<style>
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .nav-item:hover {
+    background: #f1f5f9;
+  }
+</style>
+
+</body>
+</html>
