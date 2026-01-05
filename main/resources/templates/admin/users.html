@@ -136,7 +136,7 @@
               </div>
               <div class="flex gap-2 items-center text-slate-400">
                 <i data-lucide="phone" class="w-3.5 h-3.5"></i>
-                <span th:text="${u.phone ?: '-'}">-</span>
+                <span th:text="${u.phone != null ? u.phone : '-'}">-</span>
               </div>
             </div>
           </td>

@@ -1,5 +1,17 @@
 package com.genc.healthins.controller;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.logging.Logger;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+
 import com.genc.healthins.model.Claim;
 import com.genc.healthins.model.Policy;
 import com.genc.healthins.model.SupportTicket;
@@ -7,16 +19,10 @@ import com.genc.healthins.model.User;
 import com.genc.healthins.service.ClaimService;
 import com.genc.healthins.service.PolicyService;
 import com.genc.healthins.service.SupportService;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-
-import java.time.LocalDate;
-import java.util.*;
-import java.util.stream.Collectors;
 
 @Controller
 public class AgentController {
+    private static final Logger logger = Logger.getLogger(AgentController.class.getName());
 
     private final PolicyService policyService;
     private final SupportService supportService;
@@ -48,12 +54,14 @@ public class AgentController {
         LocalDate today = LocalDate.now();
 
         for (Policy p : policies) {
-            var claims = claimService.findByPolicy(p);
-            for (Claim c : claims) {
-                String status = c.getClaimStatus();
-                if ("PENDING".equalsIgnoreCase(status)) pendingClaims.add(c);
-                if ("APPROVED".equalsIgnoreCase(status) && c.getClaimDate() != null && c.getClaimDate().toLocalDate().equals(today)) approvedToday++;
-                if ("REJECTED".equalsIgnoreCase(status) && c.getClaimDate() != null && c.getClaimDate().toLocalDate().equals(today)) rejectedToday++;
+            List<Claim> claims = claimService.findByPolicy(p);
+            if (claims != null) {
+                for (Claim c : claims) {
+                    String status = c.getClaimStatus();
+                    if ("PENDING".equalsIgnoreCase(status)) pendingClaims.add(c);
+                    if ("APPROVED".equalsIgnoreCase(status) && c.getClaimDate() != null && c.getClaimDate().toLocalDate().equals(today)) approvedToday++;
+                    if ("REJECTED".equalsIgnoreCase(status) && c.getClaimDate() != null && c.getClaimDate().toLocalDate().equals(today)) rejectedToday++;
+                }
             }
         }
 
@@ -113,7 +121,10 @@ public class AgentController {
         List<Policy> policies = policyService.findAll();
         List<Claim> allClaims = new ArrayList<>();
         for (Policy p : policies) {
-            allClaims.addAll(claimService.findByPolicy(p));
+            var claims = claimService.findByPolicy(p);
+            if (claims != null) {
+                allClaims.addAll(claims);
+            }
         }
         model.addAttribute("claims", allClaims);
         model.addAttribute("statPending", (int) allClaims.stream().filter(c -> "PENDING".equalsIgnoreCase(c.getClaimStatus())).count());
@@ -132,32 +143,58 @@ public class AgentController {
 
     @GetMapping({"/agent/customers", "/agent/customers.html"})
     public String customers(Model model) {
-        java.util.List<com.genc.healthins.model.User> users = userService.findAll().stream()
-                .filter(u -> "USER".equalsIgnoreCase(u.getRole()))
-                .toList();
+        try {
+            logger.info("Loading agent customers page");
+            java.util.List<com.genc.healthins.model.User> users = userService.findAll() != null ? 
+                    userService.findAll().stream()
+                    .filter(u -> "USER".equalsIgnoreCase(u.getRole()))
+                    .toList() : new ArrayList<>();
 
-        long active = users.stream().filter(u -> !policyService.findByUser(u).isEmpty()).count();
-        long pending = users.size() - active;
-        long inactive = 0; // no explicit status field on User yet
+            long active = users.stream().filter(u -> !policyService.findByUser(u).isEmpty()).count();
+            long pending = users.size() - active;
+            long inactive = 0; // no explicit status field on User yet
 
-        model.addAttribute("customers", users);
-        model.addAttribute("statActive", active);
-        model.addAttribute("statPending", pending);
-        model.addAttribute("statInactive", inactive);
-        model.addAttribute("customersCount", users.size());
-        return "agent/customers";
+            model.addAttribute("customers", users);
+            model.addAttribute("statActive", active);
+            model.addAttribute("statPending", pending);
+            model.addAttribute("statInactive", inactive);
+            model.addAttribute("customersCount", users.size());
+            
+            logger.info("Agent customers page loaded with " + users.size() + " customers");
+            return "agent/customers";
+        } catch (Exception e) {
+            logger.severe("Error loading agent customers page: " + e.getMessage());
+            model.addAttribute("customers", new ArrayList<>());
+            model.addAttribute("statActive", 0);
+            model.addAttribute("statPending", 0);
+            model.addAttribute("statInactive", 0);
+            model.addAttribute("customersCount", 0);
+            model.addAttribute("error", "Failed to load customers: " + e.getMessage());
+            return "agent/customers";
+        }
     }
 
     @GetMapping({"/agent/customers/{id}", "/agent/customers/{id}.html"})
     public String customerDetails(@org.springframework.web.bind.annotation.PathVariable Long id, Model model, org.springframework.web.servlet.mvc.support.RedirectAttributes ra) {
-        var opt = userService.findById(id);
-        if (opt.isEmpty()) {
-            ra.addFlashAttribute("error", "Customer not found");
+        try {
+            logger.info("Loading customer details for ID: " + id);
+            var opt = userService.findById(id);
+            if (opt.isEmpty()) {
+                ra.addFlashAttribute("error", "Customer not found");
+                return "redirect:/agent/customers";
+            }
+            var user = opt.get();
+            var policies = policyService.findByUser(user) != null ? policyService.findByUser(user) : new ArrayList<>();
+            
+            model.addAttribute("customer", user);
+            model.addAttribute("policies", policies);
+            
+            logger.info("Customer details loaded for ID: " + id);
+            return "agent/customer-details";
+        } catch (Exception e) {
+            logger.severe("Error loading customer details: " + e.getMessage());
+            ra.addFlashAttribute("error", "Failed to load customer: " + e.getMessage());
             return "redirect:/agent/customers";
         }
-        var user = opt.get();
-        model.addAttribute("customer", user);
-        model.addAttribute("policies", policyService.findByUser(user));
-        return "agent/customer-details";
     }
 }

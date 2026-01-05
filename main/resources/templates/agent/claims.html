@@ -224,7 +224,7 @@
                             <td class="px-6 py-4 hidden md:table-cell text-slate-500" th:text="${c.policy != null ? c.policy.coverageType : ''}">Type</td>
                             <td class="px-6 py-4 font-bold text-slate-900" th:text="${c.claimAmount}">0.00</td>
                             <td class="px-6 py-4">
-                                <span class="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider" th:classappend="' status-' + (${c.claimStatus}?.toLowerCase())" th:text="${c.claimStatus}">PENDING</span>
+                                <span class="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider" th:classappend="' status-' + (c.claimStatus != null ? c.claimStatus.toLowerCase() : '')" th:text="${c.claimStatus}">PENDING</span>
                             </td>
                             <td class="px-6 py-4 text-right">
                                 <div class="flex items-center justify-end gap-1">

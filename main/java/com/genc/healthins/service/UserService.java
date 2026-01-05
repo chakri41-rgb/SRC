@@ -1,9 +1,10 @@
 package com.genc.healthins.service;
 
-import com.genc.healthins.model.User;
-import java.util.Optional;
 
 import java.util.List;
+import java.util.Optional;
+
+import org.springframework.boot.autoconfigure.security.SecurityProperties.User;
 
 public interface UserService {
     Optional<User> findByEmail(String email);

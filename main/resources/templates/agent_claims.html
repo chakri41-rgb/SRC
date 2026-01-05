@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Agent - Claims</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body class="bg-light">
+    <div class="container mt-5">
+        <h2>Claims Management</h2>
+        <table class="table table-hover bg-white shadow-sm rounded">
+            <thead class="table-dark">
+                <tr>
+                    <th>Claim ID</th>
+                    <th>User</th>
+                    <th>Amount</th>
+                    <th>Reason</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="claim : ${claims}">
+                    <td th:text="${claim.id}">101</td>
+                    <td th:text="${claim.user.username}">John</td>
+                    <td th:text="${claim.claimAmount}">5000</td>
+                    <td th:text="${claim.description}">Surgery</td>
+                    <td>
+                        <span th:class="${claim.status == 'APPROVED' ? 'badge bg-success' : (claim.status == 'REJECTED' ? 'badge bg-danger' : 'badge bg-warning')}" 
+                              th:text="${claim.status}">PENDING</span>
+                    </td>
+                    <td>
+                        <form th:if="${claim.status == 'PENDING'}" action="/agent/claims/process" method="post">
+                            <input type="hidden" name="claimId" th:value="${claim.id}"/>
+                            <button type="submit" name="action" value="approve" class="btn btn-sm btn-success">Approve</button>
+                            <button type="submit" name="action" value="reject" class="btn btn-sm btn-danger">Reject</button>
+                        </form>
+                        <span th:unless="${claim.status == 'PENDING'}" class="text-muted">Completed</span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <a href="/" class="btn btn-secondary mt-3">Back Home</a>
+    </div>
+</body>
+</html>

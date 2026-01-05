@@ -93,9 +93,14 @@
       <h1 class="text-3xl font-bold">Support Tickets</h1>
       <p class="text-muted">Manage customer support requests</p>
     </div>
-    <button class="px-4 py-2 border rounded-xl flex items-center gap-2 hover:bg-slate-50">
+    <button onclick="location.reload()" class="px-4 py-2 border rounded-xl flex items-center gap-2 hover:bg-slate-50">
       <i data-lucide="refresh-cw"></i> Refresh
     </button>
+  </div>
+
+  <!-- ERROR MESSAGE -->
+  <div th:if="${error}" class="mb-8 p-4 bg-red-50 border border-red-200 rounded-xl text-red-700">
+    <p th:text="${error}"></p>
   </div>
 
   <!-- STATS -->
@@ -108,7 +113,7 @@
         </div>
     </div>
 
-    <div onclick="filterStatus('progress')" class="stat-card hover:ring-blue-400">
+    <div onclick="filterStatus('HIGH')" class="stat-card hover:ring-blue-400">
         <div class="icon bg-blue-100 text-blue-600"><i data-lucide="message-square"></i></div>
         <div>
             <p class="text-sm text-muted">High Priority</p>
@@ -145,24 +150,29 @@
 
   <!-- TICKET CARD -->
 <div id="ticket-container" class="space-y-4">
+    <div th:if="${#lists.isEmpty(tickets)}" class="bg-card rounded-xl border p-8 text-center text-muted">
+        <i data-lucide="inbox" class="w-12 h-12 mx-auto mb-4 opacity-50"></i>
+        <p>No support tickets found</p>
+    </div>
+    
     <div th:each="t : ${tickets}" 
          class="bg-card rounded-xl border p-4 transition-shadow hover:shadow-md ticket-item"
          th:data-status="${t.ticketStatus}"
-         th:data-search="${t.subject.toLowerCase() + ' ' + t.user.username.toLowerCase()}">
+         th:data-search="${(t.subject != null ? t.subject.toLowerCase() : '') + ' ' + (t.user != null && t.user.username != null ? t.user.username.toLowerCase() : '')}">
         <div class="flex justify-between items-center">
             <div>
                 <p class="text-xs text-muted font-mono mb-1" th:text="${'TCK-' + t.id}">TCK-1000</p>
-                <h3 class="font-semibold" th:text="${t.subject}">Issue Subject</h3>
+                <h3 class="font-semibold" th:text="${t.subject != null ? t.subject : 'No Subject'}">Issue Subject</h3>
                 <p class="text-sm text-muted">
-                    <span th:text="${t.user.username}">User</span> • 
-                    <span th:text="${#temporals.format(t.createdDate, 'MMM dd, yyyy')}">Date</span>
+                    <span th:text="${t.user != null && t.user.username != null ? t.user.username : 'Unknown User'}">User</span> • 
+                    <span th:text="${t.createdDate != null ? #temporals.format(t.createdDate, 'MMM dd, yyyy') : 'N/A'}">Date</span>
                 </p>
             </div>
             <div class="flex items-center gap-3">
                 <span class="px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider"
                       th:classappend="${t.ticketStatus == 'OPEN' ? 'bg-amber-100 text-amber-700' : 'bg-emerald-100 text-emerald-700'}"
-                      th:text="${t.ticketStatus}">STATUS</span>
-                <button th:onclick="openTicket([[${t.id}]], [[${t.user.username}]], [[${t.user.email}]], [[${t.issueDescription}]])" 
+                      th:text="${t.ticketStatus != null ? t.ticketStatus : 'UNKNOWN'}">STATUS</span>
+                <button th:onclick="openTicket([[${t.id}]], [[${t.user != null && t.user.username != null ? t.user.username : 'Unknown'}]], [[${t.user != null && t.user.email != null ? t.user.email : 'N/A'}]], [[${t.issueDescription != null ? t.issueDescription : 'No description'}]])" 
                         class="px-3 py-2 border rounded-xl hover:bg-slate-50">
                     View Ticket
                 </button>
@@ -184,14 +194,16 @@
             </div>
             <div id="modal-message" class="bg-slate-50 p-4 rounded-xl text-sm italic text-slate-600"></div>
             
-            <form th:action="@{/agent/support/response}" method="POST">
+            <form th:action="@{/admin/support/response}" method="POST">
                 <input type="hidden" name="ticketId" id="hidden-ticket-id">
                 <textarea name="message" rows="3" placeholder="Type your reply..." class="w-full px-4 py-3 border rounded-xl mb-3 outline-none focus:ring-2 focus:ring-blue-500/20" required></textarea>
                 <div class="flex gap-2">
                     <button type="submit" class="flex-1 bg-blue-600 text-white py-3 rounded-xl font-bold hover:bg-blue-700 transition-colors">Send Reply</button>
+                    <button type="button" onclick="closeTicket()" class="flex-1 border py-3 rounded-xl font-bold hover:bg-slate-50 transition-colors">Close</button>
+                </div>
             </form>
-            <form id="resolve-form" method="POST" class="flex-1">
-                <button type="submit" class="w-full border py-3 rounded-xl font-bold hover:bg-slate-50 transition-colors">Mark Resolved</button>
+            <form id="resolve-form" method="POST" class="w-full">
+                <button type="submit" class="w-full border py-3 rounded-xl font-bold hover:bg-emerald-50 transition-colors text-emerald-600">Mark Resolved</button>
             </form>
         </div>
     </div>
@@ -209,7 +221,7 @@
         
         // Prepare hidden inputs for forms
         document.getElementById("hidden-ticket-id").value = id;
-        document.getElementById("resolve-form").action = "/support/" + id + "/resolve";
+        document.getElementById("resolve-form").action = "/admin/support/" + id + "/resolve";
 
         // Show modal
         const modal = document.getElementById("ticketModal");
@@ -231,6 +243,18 @@
             card.style.display = searchData.includes(query) ? 'block' : 'none';
         });
     });
+
+    // STATUS FILTERING
+    function filterStatus(status) {
+        document.querySelectorAll('.ticket-item').forEach(card => {
+            const cardStatus = card.getAttribute('data-status');
+            if (status === 'all') {
+                card.style.display = 'block';
+            } else {
+                card.style.display = cardStatus === status ? 'block' : 'none';
+            }
+        });
+    }
 
     function logout() { location.href = '/logout'; }
     function go(url) { window.location.href = url; }

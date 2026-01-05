@@ -289,7 +289,7 @@
                   th:classappend="${t.ticketStatus == 'OPEN' ? 'status-open' : 'bg-emerald-100 text-emerald-700'}" th:text="${t.ticketStatus}"></span>
         </td>
         <td class="px-8 py-5 text-right">
-    <button th:attr="onclick='openTicketModal(\'' + ${t.id} + '\', \'' + ${t.user?.username ?: 'Unknown'} + '\', \'' + ${t.user?.email ?: ''} + '\', \'' + ${#temporals.format(t.createdDate, 'yyyy-MM-dd')} + '\', \'' + ${t.subject} + '\', \'' + ${t.issueDescription} + '\', \'' + ${t.priority.toUpperCase()} + '\', \'' + ${t.ticketStatus.toUpperCase()} + '\')'"
+    <button th:attr="onclick='openTicketModal(\'' + ${t.id} + '\', \'' + ${t.user != null ? t.user.username : 'Unknown'} + '\', \'' + ${t.user != null ? t.user.email : ''} + '\', \'' + ${#temporals.format(t.createdDate, 'yyyy-MM-dd')} + '\', \'' + ${t.subject} + '\', \'' + ${t.issueDescription} + '\', \'' + ${t.priority.toUpperCase()} + '\', \'' + ${t.ticketStatus.toUpperCase()} + '\')'"
         class="p-2 text-slate-300 hover:text-emerald-600 transition-colors">
     <i data-lucide="eye" class="w-5 h-5"></i>
 </button>

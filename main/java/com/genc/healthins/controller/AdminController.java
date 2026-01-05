@@ -1,20 +1,20 @@
 package com.genc.healthins.controller;
 
-import com.genc.healthins.model.Claim;
-import com.genc.healthins.model.User;
-import com.genc.healthins.service.PolicyService;
-import com.genc.healthins.service.UserService;
-
 import java.util.List;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import com.genc.healthins.model.Claim;
+import com.genc.healthins.model.User;
+import com.genc.healthins.service.PolicyService;
+import com.genc.healthins.service.UserService;
 
 // import java.util.List;
 
@@ -36,7 +36,7 @@ public class AdminController {
     @GetMapping({"/admin/dashboard", "/admin/dashboard.html"})
     public String dashboard(Model model) {
         var users = userService.findAll();
-        var policies = policyService.findAll();
+        java.util.List<com.genc.healthins.model.Policy> policies = policyService.findAll();
 
         // Aggregate claims across policies
         java.util.List<com.genc.healthins.model.Claim> allClaims = new java.util.ArrayList<>();
